@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI 2026 - ADMIN CONTROL CENTER</title>
+    <title>SEUNG RI 2026 - PROFESSIONAL ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -15,123 +15,122 @@
         input, select { background: #1f2937 !important; border: 1px solid #374151 !important; color: white !important; border-radius: 10px; padding: 10px 15px; outline: none; }
         .tab-main.active { background: #2563eb; color: white; shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
         .sub-tab.active { background: #334155; border-color: #64748b; }
-        .bracket-scroll { display: flex; gap: 60px; padding: 40px 20px; align-items: stretch; overflow-x: auto; }
-        .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 250px; }
+        .bracket-scroll { display: flex; gap: 80px; padding: 60px 20px; align-items: stretch; overflow-x: auto; }
+        .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 280px; position: relative; }
+        .round-name { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); font-weight: 900; color: #3b82f6; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; white-space: nowrap;}
         .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 12px; margin: 25px 0; min-height: 100px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 0 12px 12px 0; }
         .player-line { height: 48px; border-bottom: 2px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; position: relative; }
         .player-line:hover { background: rgba(59, 130, 246, 0.1); }
         .is-winner { background: rgba(220, 38, 38, 0.15); color: #f87171; border-bottom-color: #dc2626; }
-        .match-no-container { position: absolute; left: -50px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #64748b; font-size: 14px; }
-        .score-input { width: 40px; background: transparent !important; border: none !important; text-align: center; font-weight: 900; color: #fbbf24 !important; font-size: 16px; }
-        .medal-tag { padding: 12px; border-radius: 12px; font-weight: 800; display: flex; flex-direction: column; border-left: 6px solid #ddd; margin-bottom: 8px; width: 260px; }
+        .match-no-label { position: absolute; left: -55px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #3b82f6; font-size: 11px; display: flex; align-items: center; gap: 2px; }
+        .match-no-input { width: 35px; background: #1e293b !important; border: 1px solid #334155 !important; color: #fff !important; text-align: center; font-size: 10px; border-radius: 4px; padding: 2px !important; }
+        .score-input { width: 45px; background: transparent !important; border: none !important; text-align: center; font-weight: 900; color: #fbbf24 !important; font-size: 16px; }
+        .medal-tag { padding: 12px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 12px; border-left: 6px solid #ddd; margin-bottom: 8px; width: 100%; }
         .gold { background: linear-gradient(to right, #45371c, #161d2f); border-color: #fbbf24; color: #fbbf24; }
         .silver { background: linear-gradient(to right, #334155, #161d2f); border-color: #94a3b8; color: #cbd5e1; }
         .bronze { background: linear-gradient(to right, #432b1e, #161d2f); border-color: #b45309; color: #d97706; }
+        .speed-row:nth-child(even) { background: rgba(255,255,255,0.02); }
     </style>
 </head>
 <body>
 
 <div id="loginOverlay" class="fixed inset-0 bg-slate-950 z-[999] flex items-center justify-center p-4">
     <div class="admin-card p-10 max-w-md w-full text-center">
-        <div class="bg-blue-600 w-16 h-16 rounded-3xl rotate-6 flex items-center justify-center mx-auto mb-6 shadow-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-        <h2 class="text-3xl font-black uppercase italic mb-2 tracking-tighter">ADMIN ACCESS</h2>
+        <h2 class="text-3xl font-black uppercase italic mb-8">ADMIN ACCESS</h2>
         <input type="password" id="passInput" class="w-full mb-4 py-4 text-center text-2xl tracking-[10px]" placeholder="••••••">
-        <button onclick="checkAdminPass()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase shadow-lg hover:bg-blue-700 transition">Unlock Dashboard</button>
+        <button onclick="checkAdminPass()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase shadow-lg">Unlock Dashboard</button>
     </div>
 </div>
 
 <div class="max-w-[1850px] mx-auto p-4 md:p-6">
     <header class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-6 p-6 admin-card border-b-4 border-blue-600">
         <div class="flex items-center gap-5">
-            <h1 class="text-2xl font-black italic tracking-tighter">SEUNG RI <span class="text-blue-500 underline">PRO-ADMIN</span></h1>
+            <h1 class="text-2xl font-black italic tracking-tighter uppercase">Seung Ri <span class="text-blue-500 underline">Tournament</span></h1>
             <div id="status" class="text-[10px] font-black uppercase text-green-500 flex items-center gap-2">
                 <span id="db-indicator" class="w-2 h-2 bg-red-500 rounded-full"></span> <span id="db-text">OFFLINE</span>
             </div>
         </div>
         <nav class="flex bg-slate-900 p-1.5 rounded-2xl">
-            <button onclick="switchMain('accounts')" id="tab-accounts" class="tab-main active px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition">TÀI KHOẢN ĐOÀN</button>
-            <button onclick="switchMain('manage')" id="tab-manage" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">QUẢN LÝ VĐV</button>
-            <button onclick="switchMain('control')" id="tab-control" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2 bg-red-600/10 text-red-500">SƠ ĐỒ & ĐIỀU HÀNH</button>
+            <button onclick="switchMain('accounts')" id="tab-accounts" class="tab-main active px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition">Tài khoản</button>
+            <button onclick="switchMain('manage')" id="tab-manage" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Quản lý</button>
+            <button onclick="switchMain('control')" id="tab-control" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2 bg-red-600/10 text-red-500">Điều hành</button>
         </nav>
     </header>
 
     <div id="sec-accounts" class="space-y-6">
         <div class="admin-card p-8">
-            <h2 class="text-xl font-black uppercase italic mb-6 border-b border-slate-800 pb-4">Danh sách Đơn vị & Mật khẩu</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="text-[10px] font-black uppercase text-slate-500">
-                        <tr><th class="p-4">Email Truy cập</th><th class="p-4">Mật khẩu</th><th class="p-4">Đơn vị</th><th class="p-4 text-center">Thao tác</th></tr>
-                    </thead>
-                    <tbody id="userListBody" class="font-bold text-sm divide-y divide-slate-800"></tbody>
-                </table>
-            </div>
+            <h2 class="text-xl font-black uppercase italic mb-6 border-b border-slate-800 pb-4">Đơn vị & Mật khẩu</h2>
+            <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userListBody" class="font-bold text-sm divide-y divide-slate-800"></tbody></table></div>
         </div>
     </div>
 
     <div id="sec-manage" class="hidden space-y-6">
         <div class="flex flex-wrap gap-4 mb-2">
             <div class="flex-1 flex gap-2">
-                <button onclick="setGlobalLock(true)" class="bg-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg">Khóa sửa toàn bộ</button>
-                <button onclick="setGlobalLock(false)" class="bg-green-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg">Mở khóa toàn bộ</button>
+                <button onclick="setGlobalLock(true)" class="bg-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Khóa sửa toàn bộ</button>
+                <button onclick="setGlobalLock(false)" class="bg-green-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Mở khóa toàn bộ</button>
             </div>
-            <div class="flex gap-2">
-                <button onclick="exportData('club')" class="bg-blue-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất theo Đội</button>
-                <button onclick="exportData('content')" class="bg-emerald-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất theo Nội dung</button>
-            </div>
+            <button onclick="exportData('club')" class="bg-blue-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất Excel</button>
         </div>
         <div class="admin-card p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-black uppercase italic">Tổng hợp Vận động viên</h2>
-                <input type="text" id="searchVdv" oninput="renderAthleteTable()" placeholder="Tìm tên hoặc đội..." class="w-64 !py-2 !text-xs">
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="text-[10px] font-black uppercase text-slate-500">
-                        <tr><th class="p-4">Họ và Tên</th><th class="p-4">Đơn vị</th><th class="p-4">Nội dung</th><th class="p-4">Hạng cân</th><th class="p-4 text-center">Trạng thái</th><th class="p-4 text-center">Xóa</th></tr>
-                    </thead>
-                    <tbody id="athleteTableBody" class="font-bold text-xs divide-y divide-slate-800"></tbody>
-                </table>
-            </div>
+            <input type="text" id="searchVdv" oninput="renderAthleteTable()" placeholder="Tìm tên..." class="w-full mb-6">
+            <div class="overflow-x-auto"><table class="w-full text-left font-bold text-xs"><tbody id="athleteTableBody" class="divide-y divide-slate-800"></tbody></table></div>
         </div>
     </div>
 
     <div id="sec-control" class="hidden space-y-6">
         <div class="flex bg-slate-900 p-1.5 rounded-2xl w-fit">
-            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent">Đối kháng</button>
-            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Quyền</button>
-            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Tốc độ</button>
+            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition">Kyorugi</button>
+            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Poomsae</button>
+            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Speed</button>
         </div>
+
         <div class="grid lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 space-y-6">
                 <div class="admin-card p-6 border-t-4 border-red-600">
+                    <label class="text-[10px] font-black uppercase text-slate-500 mb-2 block italic">Hạng cân / Nội dung:</label>
                     <select id="bracketSelect" onchange="loadCurrentBracket()" class="w-full mb-4"></select>
-                    <button onclick="manualDraw()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase text-[10px] shadow-2xl">Bốc thăm lại</button>
+                    
+                    <div id="waitlistArea" class="mb-4 bg-slate-950/50 p-3 rounded-xl border border-slate-800 hidden">
+                        <h4 class="text-[10px] font-black uppercase text-amber-500 mb-2">VĐV chờ bốc thăm (<span id="waitCount">0</span>)</h4>
+                        <div id="waitNames" class="text-[10px] space-y-1 opacity-70"></div>
+                    </div>
+
+                    <button onclick="manualDraw()" class="w-full bg-red-600 py-3 rounded-xl font-black uppercase text-[10px] mb-2">Bốc thăm lại (Xóa cũ)</button>
+                    <button onclick="updateNewAthletes()" class="w-full bg-blue-600 py-3 rounded-xl font-black uppercase text-[10px]">Cập nhật VĐV mới bổ sung</button>
                 </div>
+                
                 <div class="admin-card p-6">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest">Bảng Huy Chương</h3>
+                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest">Huy chương / Medals</h3>
                     <div id="medalList" class="space-y-2"></div>
                 </div>
             </div>
+
             <div class="lg:col-span-3 admin-card min-h-[800px] relative overflow-hidden bg-[#0e1422]">
                 <div id="bracketContent" class="bracket-scroll"></div>
+                <div id="speedContent" class="hidden p-8">
+                     <table class="w-full text-left">
+                        <thead class="text-[10px] uppercase text-slate-500 border-b border-slate-800">
+                            <tr><th class="p-4">VĐV</th><th class="p-4">Đơn vị</th><th class="p-4">Thành tích (Lần)</th><th class="p-4">Thứ hạng</th></tr>
+                        </thead>
+                        <tbody id="speedTableBody"></tbody>
+                     </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+// --- CONFIG FIREBASE ---
 const firebaseConfig = {
-  apiKey: "AIzaSyBhN3Riezh-Ka20Salm1COtFbW9UdCLRdM",
-  authDomain: "seungrichampionship-90984.firebaseapp.com",
-  databaseURL: "https://seungrichampionship-90984-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "seungrichampionship-90984",
-  storageBucket: "seungrichampionship-90984.firebasestorage.app",
-  messagingSenderId: "1031691130771",
-  appId: "1:1031691130771:web:1dc2ade7290b60f9d87a66",
-  measurementId: "G-QC40451RRY"
+  apiKey: "AIzaSyBhN3Riezh-Ka20Salm1COtFbW9UdCLRdM",
+  authDomain: "seungrichampionship-90984.firebaseapp.com",
+  databaseURL: "https://seungrichampionship-90984-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "seungrichampionship-90984",
+  storageBucket: "seungrichampionship-90984.firebasestorage.app",
+  messagingSenderId: "1031691130771",
+  appId: "1:1031691130771:web:1dc2ade7290b60f9d87a66"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -142,7 +141,6 @@ let allAthletes = {};
 let allUsers = {};
 let allBrackets = {};
 
-// Kiểm tra kết nối
 db.ref('.info/connected').on('value', (s) => {
     const ind = document.getElementById('db-indicator');
     const txt = document.getElementById('db-text');
@@ -160,7 +158,6 @@ function checkAdminPass() {
 }
 
 function init() {
-    // NHÁNH DỮ LIỆU ĐÃ SỬA: seungri_v2026
     db.ref('seungri_v2026/users').on('value', s => { allUsers = s.val() || {}; renderUserTable(); });
     db.ref('seungri_v2026/registrations').on('value', s => { 
         allAthletes = s.val() || {}; 
@@ -173,61 +170,7 @@ function init() {
     });
 }
 
-function renderUserTable() {
-    const body = document.getElementById('userListBody');
-    body.innerHTML = Object.keys(allUsers).map(key => {
-        const email = key.replace(/,/g, '.');
-        return `<tr>
-            <td class="p-4 text-blue-400">${email}</td>
-            <td class="p-4"><input type="text" value="${allUsers[key].pass}" onchange="updatePass('${key}', this.value)" class="!py-1 !text-xs !bg-slate-800"></td>
-            <td class="p-4 italic opacity-50" id="club-${key}">Loading...</td>
-            <td class="p-4 text-center"><button onclick="deleteUser('${key}')" class="text-red-500">Xóa</button></td>
-        </tr>`;
-    }).join('');
-    Object.keys(allUsers).forEach(key => {
-        db.ref('seungri_v2026/last_club/'+key).once('value', s => { if(s.exists()) document.getElementById('club-'+key).innerText = s.val(); });
-    });
-}
-function updatePass(k, p) { db.ref('seungri_v2026/users/'+k).update({pass: p}); }
-function deleteUser(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/users/'+k).remove(); }
-
-function renderAthleteTable() {
-    const body = document.getElementById('athleteTableBody');
-    const search = document.getElementById('searchVdv').value.toLowerCase();
-    body.innerHTML = Object.keys(allAthletes).filter(k => {
-        const r = allAthletes[k];
-        return r.name.toLowerCase().includes(search) || r.club.toLowerCase().includes(search);
-    }).map(key => {
-        const r = allAthletes[key];
-        return `<tr>
-            <td class="p-4 uppercase">${r.name}</td>
-            <td class="p-4 text-blue-400 uppercase">${r.club}</td>
-            <td class="p-4 opacity-60">${r.category}</td>
-            <td class="p-4 text-[10px]">${r.subType}</td>
-            <td class="p-4 text-center">
-                <button onclick="toggleLock('${key}', ${!r.isLocked})" class="px-3 py-1 rounded-lg ${r.isLocked?'bg-red-600':'bg-slate-700'}">${r.isLocked?'LOCKED':'OPEN'}</button>
-            </td>
-            <td class="p-4 text-center"><button onclick="deleteVdv('${key}')" class="text-red-500">✕</button></td>
-        </tr>`;
-    }).join('');
-}
-function toggleLock(k, v) { db.ref('seungri_v2026/registrations/'+k).update({isLocked: v}); }
-function setGlobalLock(s) {
-    const up = {}; Object.keys(allAthletes).forEach(k => up[k+'/isLocked'] = s);
-    db.ref('seungri_v2026/registrations').update(up);
-}
-function deleteVdv(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/registrations/'+k).remove(); }
-
-function exportData(type) {
-    const list = Object.values(allAthletes);
-    if(list.length === 0) return alert("Không có dữ liệu!");
-    let sorted = type === 'club' ? list.sort((a,b) => a.club.localeCompare(b.club)) : list.sort((a,b) => (a.category + a.subType).localeCompare(b.category + b.subType));
-    const ws = XLSX.utils.json_to_sheet(sorted.map((r,i) => ({STT: i+1, Tên: r.name, CLB: r.club, Nội_Dung: r.category, Hạng_Cân: r.subType})));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "DANG_KY");
-    XLSX.writeFile(wb, `SEUNGRI_2026_ADMIN_EXPORT.xlsx`);
-}
-
+// UI SWITCHING
 function switchMain(id) {
     ['accounts', 'manage', 'control'].forEach(s => document.getElementById('sec-'+s).classList.add('hidden'));
     document.getElementById('sec-'+id).classList.remove('hidden');
@@ -240,6 +183,7 @@ function switchSub(id) {
     document.getElementById('sub-'+id).classList.add('active');
     updateBracketSelectors();
 }
+
 function updateBracketSelectors() {
     const sel = document.getElementById('bracketSelect');
     const cats = new Set();
@@ -250,55 +194,100 @@ function updateBracketSelectors() {
     loadCurrentBracket();
 }
 
-// BỐC THĂM
+// BỐC THĂM / LOGIC HẠNG CÂN
 async function manualDraw() {
     const subType = document.getElementById('bracketSelect').value;
-    if(!subType) return;
+    if(!subType || !confirm("Bốc thăm lại sẽ XÓA TOÀN BỘ kết quả hiện tại của hạng cân này. Bạn chắc chắn?")) return;
+    
     const participants = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
     if(participants.length < 2) return alert("Cần tối thiểu 2 VĐV!");
 
-    const shuffled = participants.sort(() => Math.random() - 0.5);
-    const size = Math.pow(2, Math.ceil(Math.log2(shuffled.length)));
-    let pArray = Array(size).fill(null).map(() => ({name: 'BYE', club: '-'}));
-    const pos = size === 2 ? [0,1] : size === 4 ? [0,3,1,2] : size === 8 ? [0,7,3,4,1,6,2,5] : Array.from({length:size}, (_,i)=>i);
-    shuffled.forEach((p, i) => pArray[pos[i]] = {name: p.name, club: p.club});
+    if(currentSubTab === 'Speed') {
+        const speedData = participants.map(p => ({name: p.name, club: p.club, score: 0, rank: ''}));
+        await db.ref(`seungri_v2026/brackets/Speed - ${subType}`).set({ type: 'Speed', players: speedData });
+    } else {
+        const shuffled = participants.sort(() => Math.random() - 0.5);
+        const size = Math.pow(2, Math.ceil(Math.log2(shuffled.length)));
+        let pArray = Array(size).fill(null).map(() => ({name: 'BYE', club: '-'}));
+        const pos = getSeedPositions(size);
+        shuffled.forEach((p, i) => pArray[pos[i]] = {name: p.name, club: p.club});
 
-    let r1 = [];
-    for(let i=0; i<size; i+=2) {
-        let m = { p1: pArray[i], p2: pArray[i+1], winner: null, matchNo: (i/2 + 1), score: '' };
-        if(m.p2.name === 'BYE') m.winner = m.p1; else if(m.p1.name === 'BYE') m.winner = m.p2;
-        r1.push(m);
-    }
-    let rounds = [r1];
-    let prev = r1;
-    while(prev.length > 1) {
-        let next = [];
-        for(let j=0; j<prev.length; j+=2) {
-            let m = { p1: prev[j].winner || {name: '?'}, p2: prev[j+1].winner || {name: '?'}, winner: null, matchNo: '', score: '' };
-            if(m.p1.name === 'BYE' && m.p2.name !== '?') m.winner = m.p2;
-            if(m.p2.name === 'BYE' && m.p1.name !== '?') m.winner = m.p1;
-            next.push(m);
+        let r1 = [];
+        for(let i=0; i<size; i+=2) {
+            let m = { p1: pArray[i], p2: pArray[i+1], winner: null, matchNo: '', score: '' };
+            if(m.p2.name === 'BYE') m.winner = m.p1; else if(m.p1.name === 'BYE') m.winner = m.p2;
+            r1.push(m);
         }
-        rounds.push(next); prev = next;
+        let rounds = [r1];
+        let prev = r1;
+        while(prev.length > 1) {
+            let next = [];
+            for(let j=0; j<prev.length; j+=2) {
+                let m = { p1: prev[j].winner || {name: '?'}, p2: prev[j+1].winner || {name: '?'}, winner: null, matchNo: '', score: '' };
+                if(m.p1.name === 'BYE' && m.p2.name !== '?') m.winner = m.p2;
+                if(m.p2.name === 'BYE' && m.p1.name !== '?') m.winner = m.p1;
+                next.push(m);
+            }
+            rounds.push(next); prev = next;
+        }
+        await db.ref(`seungri_v2026/brackets/${currentSubTab} - ${subType}`).set({ type: 'Knockout', rounds });
     }
-    await db.ref(`seungri_v2026/brackets/${currentSubTab} - ${subType}`).set({ rounds });
-    alert("Xong!");
 }
 
+function getSeedPositions(size) {
+    if(size === 2) return [0, 1];
+    if(size === 4) return [0, 3, 1, 2];
+    if(size === 8) return [0, 7, 3, 4, 1, 6, 2, 5];
+    if(size === 16) return [0, 15, 7, 8, 3, 12, 4, 11, 1, 14, 6, 9, 2, 13, 5, 10];
+    return Array.from({length: size}, (_, i) => i);
+}
+
+// ĐIỀU HÀNH
 function loadCurrentBracket() {
     const subType = document.getElementById('bracketSelect').value;
     const catKey = `${currentSubTab} - ${subType}`;
-    const area = document.getElementById('bracketContent');
-    area.innerHTML = "";
-    if(!allBrackets[catKey]) return area.innerHTML = "<div class='p-20 text-center opacity-20 font-black text-4xl'>CHƯA BỐC THĂM</div>";
+    const bracketArea = document.getElementById('bracketContent');
+    const speedArea = document.getElementById('speedContent');
+    const waitArea = document.getElementById('waitlistArea');
+    
+    // Show waitlist
+    const waitPlayers = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
+    document.getElementById('waitCount').innerText = waitPlayers.length;
+    document.getElementById('waitNames').innerHTML = waitPlayers.map(p => `<div>• ${p.name} (${p.club})</div>`).join('');
+    waitArea.classList.toggle('hidden', waitPlayers.length === 0);
 
-    allBrackets[catKey].rounds.forEach((round, ri) => {
+    bracketArea.innerHTML = ""; speedArea.innerHTML = "";
+    bracketArea.classList.add('hidden'); speedArea.classList.add('hidden');
+
+    if(!allBrackets[catKey]) return;
+
+    if(allBrackets[catKey].type === 'Speed') {
+        speedArea.classList.remove('hidden');
+        renderSpeedTable(catKey);
+    } else {
+        bracketArea.classList.remove('hidden');
+        renderKnockoutBracket(catKey);
+    }
+}
+
+function renderKnockoutBracket(catKey) {
+    const rounds = allBrackets[catKey].rounds;
+    const area = document.getElementById('bracketContent');
+    
+    rounds.forEach((round, ri) => {
         const col = document.createElement('div');
         col.className = 'round-column';
+        
+        // Vòng đấu name
+        const rName = document.createElement('div');
+        rName.className = 'round-name';
+        rName.innerText = getRoundName(ri, rounds.length);
+        col.appendChild(rName);
+
         round.forEach((m, mi) => {
             const box = document.createElement('div');
             box.className = 'match-box';
-            box.innerHTML = `<div class="match-no-container">(<input type="text" value="${m.matchNo || ''}" onblur="updateMatchDetail('${catKey}',${ri},${mi},'matchNo',this.value)" class="!bg-transparent !p-0 !w-8 !border-none !text-center !text-blue-500">)</div>`;
+            box.innerHTML = `<div class="match-no-label">No.<input type="text" value="${m.matchNo || ''}" onblur="updateMatchDetail('${catKey}',${ri},${mi},'matchNo',this.value)" class="match-no-input"></div>`;
             box.appendChild(renderSlot(catKey, ri, mi, 1, m.p1, m.winner, m.score));
             box.appendChild(renderSlot(catKey, ri, mi, 2, m.p2, m.winner, m.score));
             col.appendChild(box);
@@ -306,6 +295,14 @@ function loadCurrentBracket() {
         area.appendChild(col);
     });
     renderMedals(catKey);
+}
+
+function getRoundName(ri, total) {
+    if (ri === total - 1) return "Final";
+    if (ri === total - 2) return "Semifinal";
+    if (ri === total - 3) return "Quarterfinal";
+    if (ri === total - 4) return "Round of 16";
+    return "Qualifying";
 }
 
 function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
@@ -316,12 +313,110 @@ function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
     if(p.name !== 'BYE' && p.name !== '?') {
         const sc = document.createElement('input');
         sc.className = 'score-input'; sc.value = (isWin && score) ? score : '';
+        sc.placeholder = "Pts";
         sc.onclick = (e) => e.stopPropagation();
         sc.onblur = (e) => updateMatchDetail(catKey, ri, mi, 'score', e.target.value);
         div.appendChild(sc);
         div.onclick = () => setWinner(catKey, ri, mi, pNum);
     }
     return div;
+}
+
+// SPEED LOGIC
+function renderSpeedTable(catKey) {
+    const b = allBrackets[catKey];
+    const body = document.getElementById('speedTableBody');
+    body.innerHTML = b.players.map((p, i) => `
+        <tr class="speed-row border-b border-slate-800">
+            <td class="p-4 uppercase font-black text-xs">${p.name}</td>
+            <td class="p-4 text-xs opacity-60">${p.club}</td>
+            <td class="p-4"><input type="number" value="${p.score || 0}" onchange="updateSpeedScore('${catKey}', ${i}, this.value)" class="w-20 bg-slate-800 border-none rounded p-2 text-amber-500 font-bold"></td>
+            <td class="p-4">${renderMedalIcon(p.rank)}</td>
+        </tr>
+    `).join('');
+    renderMedals(catKey);
+}
+
+async function updateSpeedScore(catKey, idx, val) {
+    const b = allBrackets[catKey];
+    b.players[idx].score = parseInt(val);
+    
+    // Auto sort rank
+    const sorted = [...b.players].sort((a,b) => b.score - a.score);
+    b.players.forEach(p => {
+        const pos = sorted.findIndex(s => s.name === p.name);
+        if(p.score > 0) {
+            if(pos === 0) p.rank = 'GOLD';
+            else if(pos === 1) p.rank = 'SILVER';
+            else if(pos === 2 || pos === 3) p.rank = 'BRONZE';
+            else p.rank = '';
+        }
+    });
+    await db.ref(`seungri_v2026/brackets/${catKey}`).set(b);
+}
+
+function renderMedalIcon(rank) {
+    if(rank === 'GOLD') return '🥇 <span class="text-amber-400 font-black">GOLD</span>';
+    if(rank === 'SILVER') return '🥈 <span class="text-slate-300 font-black">SILVER</span>';
+    if(rank === 'BRONZE') return '🥉 <span class="text-amber-700 font-black">BRONZE</span>';
+    return '-';
+}
+
+function renderMedals(catKey) {
+    const area = document.getElementById('medalList'); area.innerHTML = "";
+    const b = allBrackets[catKey];
+    if(!b) return;
+
+    if(b.type === 'Speed') {
+        b.players.filter(p => p.rank).forEach(p => {
+            area.innerHTML += renderMedalTag(p.rank, p, p.rank.toLowerCase());
+        });
+    } else {
+        const last = b.rounds[b.rounds.length - 1][0];
+        const gold = last.winner;
+        const silver = gold ? (gold.name === last.p1.name ? last.p2 : last.p1) : null;
+        area.innerHTML += renderMedalTag('🥇 GOLD', gold, 'gold');
+        area.innerHTML += renderMedalTag('🥈 SILVER', silver, 'silver');
+        if(b.rounds.length > 1) {
+            b.rounds[b.rounds.length - 2].forEach(m => {
+                const br = m.winner.name === m.p1.name ? m.p2 : m.p1;
+                if(br.name !== 'BYE' && br.name !== '?') area.innerHTML += renderMedalTag('🥉 BRONZE', br, 'bronze');
+            });
+        }
+    }
+}
+
+function renderMedalTag(l, p, s) {
+    const icon = l.includes('GOLD') ? '🥇' : l.includes('SILVER') ? '🥈' : '🥉';
+    return `<div class="medal-tag ${s}">
+        <span class="text-2xl">${icon}</span>
+        <div>
+            <span class="text-[8px] opacity-60 uppercase">${l}</span><br>
+            <span class="text-xs font-black uppercase">${p?.name || '---'}</span>
+        </div>
+    </div>`;
+}
+
+// UPDATE LOGIC (Bổ sung VĐV vào sơ đồ sẵn có)
+async function updateNewAthletes() {
+    const subType = document.getElementById('bracketSelect').value;
+    const catKey = `${currentSubTab} - ${subType}`;
+    if(!allBrackets[catKey] || allBrackets[catKey].type === 'Speed') return alert("Chỉ áp dụng cho sơ đồ đối kháng/quyền đã bốc!");
+
+    const currentPlayers = [];
+    allBrackets[catKey].rounds[0].forEach(m => {
+        if(m.p1.name !== 'BYE') currentPlayers.push(m.p1.name);
+        if(m.p2.name !== 'BYE') currentPlayers.push(m.p2.name);
+    });
+
+    const latestPlayers = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
+    const newOnes = latestPlayers.filter(p => !currentPlayers.includes(p.name));
+
+    if(newOnes.length === 0) return alert("Không có VĐV mới nào được tìm thấy.");
+
+    if(confirm(`Tìm thấy ${newOnes.length} VĐV mới. Bạn có muốn BỐC THĂM LẠI TOÀN BỘ không? (Khuyên dùng để đảm bảo tính ngẫu nhiên)`)) {
+        manualDraw();
+    }
 }
 
 async function setWinner(catKey, ri, mi, pNum) {
@@ -342,24 +437,30 @@ async function updateMatchDetail(catKey, ri, mi, f, v) {
     await db.ref(`seungri_v2026/brackets/${catKey}/rounds/${ri}/${mi}`).update({ [f]: v });
 }
 
-function renderMedals(catKey) {
-    const b = allBrackets[catKey];
-    const area = document.getElementById('medalList'); area.innerHTML = "";
-    const last = b.rounds[b.rounds.length - 1][0];
-    const gold = last.winner;
-    const silver = gold ? (gold.name === last.p1.name ? last.p2 : last.p1) : null;
-    area.innerHTML += renderMedalTag('VÀNG', gold, 'gold');
-    area.innerHTML += renderMedalTag('BẠC', silver, 'silver');
-    if(b.rounds.length > 1) {
-        b.rounds[b.rounds.length - 2].forEach(m => {
-            const br = m.winner.name === m.p1.name ? m.p2 : m.p1;
-            if(br.name !== 'BYE' && br.name !== '?') area.innerHTML += renderMedalTag('ĐỒNG', br, 'bronze');
-        });
-    }
+// Helpers...
+function renderUserTable() {
+    const body = document.getElementById('userListBody');
+    body.innerHTML = Object.keys(allUsers).map(key => {
+        return `<tr><td class="p-4 text-blue-400">${key.replace(/,/g,'.')}</td><td class="p-4"><input type="text" value="${allUsers[key].pass}" onchange="updatePass('${key}', this.value)" class="!py-1 !bg-slate-800"></td><td class="p-4 opacity-50" id="club-${key}">...</td><td class="p-4 text-center"><button onclick="deleteUser('${key}')" class="text-red-500">Xóa</button></td></tr>`;
+    }).join('');
+    Object.keys(allUsers).forEach(key => db.ref('seungri_v2026/last_club/'+key).once('value', s => { if(s.exists()) document.getElementById('club-'+key).innerText = s.val(); }));
 }
-function renderMedalTag(l, p, s) {
-    return `<div class="medal-tag ${s}"><span class="text-[8px] opacity-60">${l}</span><span class="text-xs font-black uppercase">${p?.name || '---'}</span></div>`;
+function updatePass(k, p) { db.ref('seungri_v2026/users/'+k).update({pass: p}); }
+function deleteUser(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/users/'+k).remove(); }
+function renderAthleteTable() {
+    const body = document.getElementById('athleteTableBody');
+    const search = document.getElementById('searchVdv').value.toLowerCase();
+    body.innerHTML = Object.keys(allAthletes).filter(k => {
+        const r = allAthletes[k];
+        return r.name.toLowerCase().includes(search) || r.club.toLowerCase().includes(search);
+    }).map(key => {
+        const r = allAthletes[key];
+        return `<tr><td class="p-4 uppercase">${r.name}</td><td class="p-4 text-blue-400 uppercase">${r.club}</td><td class="p-4 opacity-60">${r.category}</td><td class="p-4 text-[10px]">${r.subType}</td><td class="p-4 text-center"><button onclick="toggleLock('${key}', ${!r.isLocked})" class="px-3 py-1 rounded-lg ${r.isLocked?'bg-red-600':'bg-slate-700'}">${r.isLocked?'LOCKED':'OPEN'}</button></td><td class="p-4 text-center"><button onclick="deleteVdv('${key}')" class="text-red-500">✕</button></td></tr>`;
+    }).join('');
 }
+function toggleLock(k, v) { db.ref('seungri_v2026/registrations/'+k).update({isLocked: v}); }
+function setGlobalLock(s) { const up = {}; Object.keys(allAthletes).forEach(k => up[k+'/isLocked'] = s); db.ref('seungri_v2026/registrations').update(up); }
+function deleteVdv(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/registrations/'+k).remove(); }
 </script>
 </body>
 </html>
