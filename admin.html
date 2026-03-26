@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI 2026 - PROFESSIONAL ADMIN</title>
+    <title>SEUNG RI 2026 - ADMIN ULTIMATE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -13,20 +13,19 @@
         body { font-family: 'Inter', sans-serif; background: #0b0f19; color: #f1f5f9; overflow-x: hidden; }
         .admin-card { background: #161d2f; border: 1px solid #232d45; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
         input, select { background: #1f2937 !important; border: 1px solid #374151 !important; color: white !important; border-radius: 10px; padding: 10px 15px; outline: none; }
-        .tab-main.active { background: #2563eb; color: white; shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
+        .tab-main.active { background: #2563eb; color: white; box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
         .sub-tab.active { background: #334155; border-color: #64748b; }
-        
-        /* Bracket & Group Style */
-        .bracket-scroll { display: flex; gap: 60px; padding: 60px 20px; align-items: stretch; overflow-x: auto; }
+        .bracket-scroll { display: flex; gap: 80px; padding: 60px 20px; align-items: stretch; overflow-x: auto; }
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 280px; position: relative; }
         .round-name { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); font-weight: 900; color: #3b82f6; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; white-space: nowrap;}
         .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 12px; margin: 25px 0; min-height: 100px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 0 12px 12px 0; }
         .player-line { height: 48px; border-bottom: 2px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; position: relative; }
-        .is-winner { background: rgba(220, 38, 38, 0.15); color: #f87171; border-bottom-color: #dc2626; }
-        .match-no-label { position: absolute; left: -55px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #3b82f6; font-size: 11px; }
-        .match-no-input { width: 35px; background: #1e293b !important; border: 1px solid #334155 !important; color: #fff !important; text-align: center; font-size: 10px; border-radius: 4px; padding: 2px !important; }
-        .score-input { width: 55px; background: #1e293b !important; border: 1px solid #374151 !important; text-align: center; font-weight: 900; color: #fbbf24 !important; border-radius: 8px; }
-        
+        .player-line:hover { background: rgba(59, 130, 246, 0.1); }
+        .is-winner { background: rgba(220, 38, 38, 0.2) !important; color: #f87171 !important; border-bottom-color: #dc2626 !important; font-weight: 900; }
+        .is-loss { opacity: 0.4; }
+        .match-no-label { position: absolute; left: -65px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #3b82f6; font-size: 11px; }
+        .match-no-input { width: 40px; background: #1e293b !important; border: 1px solid #334155 !important; color: #fff !important; text-align: center; font-size: 10px; border-radius: 4px; padding: 2px !important; }
+        .score-input { width: 50px; background: #1e293b !important; border: 1px solid #374151 !important; text-align: center; font-weight: 900; color: #fbbf24 !important; border-radius: 8px; font-size: 14px; }
         .medal-tag { padding: 12px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 12px; border-left: 6px solid #ddd; margin-bottom: 8px; width: 100%; }
         .gold { background: linear-gradient(to right, #45371c, #161d2f); border-color: #fbbf24; color: #fbbf24; }
         .silver { background: linear-gradient(to right, #334155, #161d2f); border-color: #94a3b8; color: #cbd5e1; }
@@ -60,36 +59,34 @@
 
     <div id="sec-accounts" class="space-y-6">
         <div class="admin-card p-8">
-            <h2 class="text-xl font-black uppercase italic mb-6 border-b border-slate-800 pb-4">Đơn vị & Mật khẩu</h2>
-            <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userListBody" class="font-bold text-sm divide-y divide-slate-800"></tbody></table></div>
+            <h2 class="text-xl font-black uppercase italic mb-6 border-b border-slate-800 pb-4">Tài khoản đơn vị</h2>
+            <div class="overflow-x-auto"><table class="w-full text-left font-bold text-sm divide-y divide-slate-800"><tbody id="userListBody"></tbody></table></div>
         </div>
     </div>
 
     <div id="sec-manage" class="hidden space-y-6">
         <div class="flex flex-wrap gap-4 mb-2">
-            <div class="flex-1 flex gap-2">
-                <button onclick="setGlobalLock(true)" class="bg-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Khóa sửa toàn bộ</button>
-                <button onclick="setGlobalLock(false)" class="bg-green-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Mở khóa toàn bộ</button>
-            </div>
-            <button onclick="exportData('club')" class="bg-blue-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất Excel</button>
+            <button onclick="setGlobalLock(true)" class="bg-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Khóa sửa toàn bộ</button>
+            <button onclick="setGlobalLock(false)" class="bg-green-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Mở khóa toàn bộ</button>
+            <button onclick="exportData()" class="bg-blue-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất Excel</button>
         </div>
         <div class="admin-card p-8">
             <input type="text" id="searchVdv" oninput="renderAthleteTable()" placeholder="Tìm tên..." class="w-full mb-6">
-            <div class="overflow-x-auto"><table class="w-full text-left font-bold text-xs"><tbody id="athleteTableBody" class="divide-y divide-slate-800"></tbody></table></div>
+            <div class="overflow-x-auto"><table class="w-full text-left font-bold text-xs divide-y divide-slate-800"><tbody id="athleteTableBody"></tbody></table></div>
         </div>
     </div>
 
     <div id="sec-control" class="hidden space-y-6">
         <div class="flex bg-slate-900 p-1.5 rounded-2xl w-fit">
-            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition">Đối kháng</button>
-            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Quyền</button>
-            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Tốc độ</button>
+            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition">Kyorugi</button>
+            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Poomsae</button>
+            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Speed</button>
         </div>
 
         <div class="grid lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 space-y-6">
                 <div class="admin-card p-6 border-t-4 border-red-600">
-                    <label class="text-[10px] font-black uppercase text-slate-500 mb-2 block italic">Chọn Nội dung:</label>
+                    <label class="text-[10px] font-black uppercase text-slate-500 mb-2 block italic">Hạng cân / Nội dung:</label>
                     <select id="bracketSelect" onchange="loadCurrentBracket()" class="w-full mb-4"></select>
                     
                     <div id="waitlistArea" class="mb-4 bg-slate-950/50 p-3 rounded-xl border border-slate-800 hidden">
@@ -97,12 +94,12 @@
                         <div id="waitNames" class="text-[10px] space-y-1 opacity-70"></div>
                     </div>
 
-                    <button onclick="manualDraw()" class="w-full bg-red-600 py-3 rounded-xl font-black uppercase text-[10px] mb-2">Bốc thăm / Chia nhóm mới</button>
+                    <button onclick="handleManualDraw()" class="w-full bg-red-600 py-3 rounded-xl font-black uppercase text-[10px] mb-2">Bốc thăm / Chia nhóm mới</button>
                     <button onclick="updateNewAthletes()" class="w-full bg-blue-600 py-3 rounded-xl font-black uppercase text-[10px]">Cập nhật VĐV bổ sung</button>
                 </div>
                 
                 <div class="admin-card p-6">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest">Huy chương / Medals</h3>
+                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest italic">🥇 Bảng huy chương</h3>
                     <div id="medalList" class="space-y-2"></div>
                 </div>
             </div>
@@ -134,7 +131,9 @@ let currentSubTab = "Kyorugi";
 let allAthletes = {};
 let allUsers = {};
 let allBrackets = {};
+let isUpdating = false;
 
+// KẾT NỐI
 db.ref('.info/connected').on('value', (s) => {
     const ind = document.getElementById('db-indicator');
     const txt = document.getElementById('db-text');
@@ -148,7 +147,7 @@ function checkAdminPass() {
     if(document.getElementById('passInput').value === "admin123") {
         document.getElementById('loginOverlay').style.display = 'none';
         init();
-    } else alert("Sai mật khẩu!");
+    } else alert("Mật khẩu sai!");
 }
 
 function init() {
@@ -188,18 +187,19 @@ function updateBracketSelectors() {
     loadCurrentBracket();
 }
 
-// BỐC THĂM VỚI CHIA NHÓM 4
-async function manualDraw() {
+// BỐC THĂM / CHIA NHÓM
+async function handleManualDraw() {
     const subType = document.getElementById('bracketSelect').value;
-    if(!subType || !confirm("Xác nhận bốc thăm/chia nhóm lại? Toàn bộ kết quả cũ sẽ mất.")) return;
-    
+    if(!subType) return;
+    if(!confirm(`Xác nhận bốc thăm/chia nhóm lại nội dung: ${subType}? Toàn bộ kết quả cũ sẽ bị xóa!`)) return;
+
     const participants = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
     if(participants.length < 2) return alert("Cần tối thiểu 2 VĐV!");
 
     const shuffled = participants.sort(() => Math.random() - 0.5);
 
-    // NẾU LÀ SPEED HOẶC POOMSAE -> CHIA NHÓM 4
     if(currentSubTab === 'Speed' || currentSubTab === 'Poomsae') {
+        // Chia nhóm 4
         const groups = [];
         for (let i = 0; i < shuffled.length; i += 4) {
             groups.push({
@@ -208,9 +208,8 @@ async function manualDraw() {
             });
         }
         await db.ref(`seungri_v2026/brackets/${currentSubTab} - ${subType}`).set({ type: 'Group4', groups });
-    } 
-    // NẾU LÀ KYORUGI -> BỐC THĂM LOẠI TRỰC TIẾP
-    else {
+    } else {
+        // Knockout Kyorugi
         const size = Math.pow(2, Math.ceil(Math.log2(shuffled.length)));
         let pArray = Array(size).fill(null).map(() => ({name: 'BYE', club: '-'}));
         const pos = getSeedPositions(size);
@@ -236,7 +235,7 @@ async function manualDraw() {
         }
         await db.ref(`seungri_v2026/brackets/${currentSubTab} - ${subType}`).set({ type: 'Knockout', rounds });
     }
-    alert("Bốc thăm xong!");
+    alert("Thành công!");
 }
 
 function getSeedPositions(size) {
@@ -288,7 +287,7 @@ function renderKnockoutBracket(catKey) {
         round.forEach((m, mi) => {
             const box = document.createElement('div');
             box.className = 'match-box';
-            box.innerHTML = `<div class="match-no-label">(<input type="text" value="${m.matchNo || ''}" onblur="updateMatchDetail('${catKey}',${ri},${mi},'matchNo',this.value)" class="match-no-input">)</div>`;
+            box.innerHTML = `<div class="match-no-label">(<input type="text" value="${m.matchNo || ''}" onblur="updateMatchDetail('${catKey}',${ri},${mi},'matchNo',this.value)" class="match-no-input" placeholder="No.">)</div>`;
             box.appendChild(renderSlot(catKey, ri, mi, 1, m.p1, m.winner, m.score));
             box.appendChild(renderSlot(catKey, ri, mi, 2, m.p2, m.winner, m.score));
             col.appendChild(box);
@@ -308,13 +307,16 @@ function getRoundName(ri, total) {
 
 function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
     const isWin = winner && winner.name === p.name && p.name !== 'BYE';
+    const isLoss = winner && winner.name !== p.name && p.name !== 'BYE';
     const div = document.createElement('div');
-    div.className = `player-line ${isWin?'is-winner':''} ${p.name==='BYE'?'opacity-20':''}`;
+    div.className = `player-line ${isWin?'is-winner':''} ${isLoss?'is-loss':''} ${p.name==='BYE'?'opacity-20':''}`;
     div.innerHTML = `<div><span class="font-black uppercase">${p.name}</span><br><span class="text-[8px] opacity-50">${p.club}</span></div>`;
+    
     if(p.name !== 'BYE' && p.name !== '?') {
         const sc = document.createElement('input');
-        sc.className = 'score-input'; sc.value = (isWin && score) ? score : '';
-        sc.placeholder = "Score";
+        sc.className = 'score-input'; 
+        sc.value = (isWin && score) ? score : '';
+        sc.placeholder = "0";
         sc.onclick = (e) => e.stopPropagation();
         sc.onblur = (e) => updateMatchDetail(catKey, ri, mi, 'score', e.target.value);
         div.appendChild(sc);
@@ -323,7 +325,7 @@ function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
     return div;
 }
 
-// GROUP LOGIC (SPEED & POOMSAE)
+// GROUP TABLE
 function renderGroupTable(catKey) {
     const b = allBrackets[catKey];
     const area = document.getElementById('groupContent');
@@ -332,7 +334,7 @@ function renderGroupTable(catKey) {
             <h3 class="text-blue-500 font-black mb-4 uppercase">Nhóm / Group ${group.groupId}</h3>
             <table class="w-full text-left">
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800">
-                    <tr><th class="p-3">VĐV / Athlete</th><th class="p-3">Đơn vị / Club</th><th class="p-3">Thành tích / Score</th><th class="p-3">Hạng / Rank</th></tr>
+                    <tr><th class="p-3">VĐV</th><th class="p-3">Đơn vị</th><th class="p-3">Thành tích</th><th class="p-3">Hạng</th></tr>
                 </thead>
                 <tbody>
                     ${group.players.map((p, pIdx) => `
@@ -355,8 +357,6 @@ function renderGroupTable(catKey) {
 async function updateGroupScore(catKey, gIdx, pIdx, val) {
     const b = allBrackets[catKey];
     b.groups[gIdx].players[pIdx].score = parseFloat(val);
-    
-    // Auto rank in group
     const sorted = [...b.groups[gIdx].players].sort((a,b) => b.score - a.score);
     b.groups[gIdx].players.forEach(p => {
         const pos = sorted.findIndex(s => s.name === p.name);
@@ -370,88 +370,49 @@ async function updateGroupScore(catKey, gIdx, pIdx, val) {
     await db.ref(`seungri_v2026/brackets/${catKey}`).set(b);
 }
 
-function renderMedalIcon(rank) {
-    if(rank === 'GOLD') return '<span class="text-amber-400">🥇 VÀNG</span>';
-    if(rank === 'SILVER') return '<span class="text-slate-300">🥈 BẠC</span>';
-    if(rank === 'BRONZE') return '<span class="text-amber-700">🥉 ĐỒNG</span>';
-    return '-';
+function renderMedalIcon(r) {
+    if(r==='GOLD') return '🥇 VÀNG'; if(r==='SILVER') return '🥈 BẠC'; if(r==='BRONZE') return '🥉 ĐỒNG'; return '-';
 }
 
-function renderMedals(catKey) {
-    const area = document.getElementById('medalList'); area.innerHTML = "";
-    const b = allBrackets[catKey];
-    if(!b) return;
-
-    if(b.type === 'Group4') {
-        b.groups.forEach(g => {
-            g.players.filter(p => p.rank).forEach(p => {
-                area.innerHTML += renderMedalTag(`${p.rank} (G${g.groupId})`, p, p.rank.toLowerCase());
-            });
-        });
-    } else {
-        const last = b.rounds[b.rounds.length - 1][0];
-        const gold = last.winner;
-        const silver = gold ? (gold.name === last.p1.name ? last.p2 : last.p1) : null;
-        area.innerHTML += renderMedalTag('GOLD', gold, 'gold');
-        area.innerHTML += renderMedalTag('SILVER', silver, 'silver');
-        if(b.rounds.length > 1) {
-            b.rounds[b.rounds.length - 2].forEach(m => {
-                const br = m.winner.name === m.p1.name ? m.p2 : m.p1;
-                if(br.name !== 'BYE' && br.name !== '?') area.innerHTML += renderMedalTag('BRONZE', br, 'bronze');
-            });
-        }
-    }
-}
-
-function renderMedalTag(l, p, s) {
-    const icon = l.includes('GOLD') ? '🥇' : l.includes('SILVER') ? '🥈' : '🥉';
-    return `<div class="medal-tag ${s}">
-        <span class="text-2xl">${icon}</span>
-        <div>
-            <span class="text-[8px] opacity-60 uppercase">${l}</span><br>
-            <span class="text-xs font-black uppercase">${p?.name || '---'}</span>
-        </div>
-    </div>`;
-}
-
-// LƯU KẾT QUẢ CƠ BẢN
 async function setWinner(catKey, ri, mi, pNum) {
+    if (isUpdating) return; isUpdating = true;
     const b = allBrackets[catKey];
     const m = b.rounds[ri][mi];
-    const win = pNum === 1 ? m.p1 : m.p2;
-    if(win.name === '?' || win.name === 'BYE') return;
-    b.rounds[ri][mi].winner = win;
-    if(b.rounds[ri+1]) {
+    const sel = pNum === 1 ? m.p1 : m.p2;
+    if (sel.name === '?' || sel.name === 'BYE') { isUpdating = false; return; }
+
+    if (m.winner && m.winner.name === sel.name) { m.winner = null; m.score = ""; } 
+    else { m.winner = sel; }
+
+    if (b.rounds[ri + 1]) {
         const nMi = Math.floor(mi / 2);
-        if(mi % 2 === 0) b.rounds[ri+1][nMi].p1 = win;
-        else b.rounds[ri+1][nMi].p2 = win;
+        const nP = (mi % 2 === 0) ? 'p1' : 'p2';
+        b.rounds[ri + 1][nMi][nP] = m.winner || { name: '?', club: '' };
+        resetFutureMatches(b, ri + 1, nMi);
     }
     await db.ref(`seungri_v2026/brackets/${catKey}`).set(b);
+    isUpdating = false;
+}
+
+function resetFutureMatches(b, ri, mi) {
+    if (!b.rounds[ri]) return;
+    const m = b.rounds[ri][mi]; m.winner = null; m.score = "";
+    if (b.rounds[ri + 1]) {
+        const nMi = Math.floor(mi / 2);
+        const nP = (mi % 2 === 0) ? 'p1' : 'p2';
+        b.rounds[ri + 1][nMi][nP] = { name: '?', club: '' };
+        resetFutureMatches(b, ri + 1, nMi);
+    }
 }
 
 async function updateMatchDetail(catKey, ri, mi, f, v) {
     await db.ref(`seungri_v2026/brackets/${catKey}/rounds/${ri}/${mi}`).update({ [f]: v });
 }
 
-// CÁC HÀM CƠ BẢN GIỮ NGUYÊN...
-function renderUserTable() {
-    const body = document.getElementById('userListBody');
-    body.innerHTML = Object.keys(allUsers).map(k => `<tr><td class="p-4 text-blue-400">${k.replace(/,/g,'.')}</td><td class="p-4"><input type="text" value="${allUsers[k].pass}" onchange="updatePass('${k}', this.value)" class="!py-1 !text-xs !bg-slate-800"></td><td class="p-4 italic opacity-50" id="club-${k}">Loading...</td><td class="p-4 text-center"><button onclick="deleteUser('${k}')" class="text-red-500">Xóa</button></td></tr>`).join('');
-    Object.keys(allUsers).forEach(k => db.ref('seungri_v2026/last_club/'+k).once('value', s => { if(s.exists()) document.getElementById('club-'+k).innerText = s.val(); }));
-}
-function updatePass(k, p) { db.ref('seungri_v2026/users/'+k).update({pass: p}); }
-function deleteUser(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/users/'+k).remove(); }
-function renderAthleteTable() {
-    const body = document.getElementById('athleteTableBody');
-    const search = document.getElementById('searchVdv').value.toLowerCase();
-    body.innerHTML = Object.keys(allAthletes).filter(k => allAthletes[k].name.toLowerCase().includes(search)).map(k => {
-        const r = allAthletes[k];
-        return `<tr><td class="p-4 uppercase">${r.name}</td><td class="p-4 text-blue-400 uppercase">${r.club}</td><td class="p-4 opacity-60">${r.category}</td><td class="p-4 text-[10px]">${r.subType}</td><td class="p-4 text-center"><button onclick="toggleLock('${k}', ${!r.isLocked})" class="px-3 py-1 rounded-lg ${r.isLocked?'bg-red-600':'bg-slate-700'}">${r.isLocked?'LOCKED':'OPEN'}</button></td><td class="p-4 text-center"><button onclick="deleteVdv('${k}')" class="text-red-500">✕</button></td></tr>`;
-    }).join('');
-}
-function toggleLock(k, v) { db.ref('seungri_v2026/registrations/'+k).update({isLocked: v}); }
-function setGlobalLock(s) { const up = {}; Object.keys(allAthletes).forEach(k => up[k+'/isLocked'] = s); db.ref('seungri_v2026/registrations').update(up); }
-function deleteVdv(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/registrations/'+k).remove(); }
-</script>
-</body>
-</html>
+function renderMedals(catKey) {
+    const area = document.getElementById('medalList'); area.innerHTML = "";
+    const b = allBrackets[catKey]; if(!b) return;
+
+    if(b.type === 'Group4') {
+        b.groups.forEach(g => {
+            g.players.filter(p => p.rank).forEach(p => { area
