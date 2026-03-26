@@ -478,4 +478,27 @@ async function updatePoomsaeMatch(catKey, gIdx, ri, mi, f, v) { await db.ref(`se
 
 function renderUserTable() {
     const body = document.getElementById('userListBody');
-    body.innerHTML = Object.keys(allUsers).map(k => `<tr><td class="p-4 text-blue-400">${k.replace(/,/g,'.')}</td><td class="p-4"><input type="text" value="${allUsers
+    body.innerHTML = Object.keys(allUsers).map(k => `<tr><td class="p-4 text-blue-400">${k.replace(/,/g,'.')}</td><td class="p-4"><input type="text" value="${allUsers[k].pass}" onchange="updatePass('${k}', this.value)" class="!py-1 !text-xs !bg-slate-800"></td><td class="p-4 italic opacity-50" id="club-${k}">Loading...</td><td class="p-4 text-center"><button onclick="deleteUser('${k}')" class="text-red-500">Xóa</button></td></tr>`).join('');
+    Object.keys(allUsers).forEach(k => db.ref('seungri_v2026/last_club/'+k).once('value', s => { if(s.exists()) document.getElementById('club-'+k).innerText = s.val(); }));
+}
+function updatePass(k, p) { db.ref('seungri_v2026/users/'+k).update({pass: p}); }
+function deleteUser(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/users/'+k).remove(); }
+function renderAthleteTable() {
+    const body = document.getElementById('athleteTableBody');
+    const search = document.getElementById('searchVdv').value.toLowerCase();
+    body.innerHTML = Object.keys(allAthletes).filter(k => allAthletes[k].name.toLowerCase().includes(search)).map(k => {
+        const r = allAthletes[k];
+        return `<tr><td class="p-4 uppercase">${r.name}</td><td class="p-4 text-blue-400 uppercase">${r.club}</td><td class="p-4 opacity-60">${r.category}</td><td class="p-4 text-[10px]">${r.subType}</td><td class="p-4 text-center"><button onclick="toggleLock('${k}', ${!r.isLocked})" class="px-3 py-1 rounded-lg ${r.isLocked?'bg-red-600':'bg-slate-700'}">${r.isLocked?'LOCKED':'OPEN'}</button></td><td class="p-4 text-center"><button onclick="deleteVdv('${k}')" class="text-red-500">✕</button></td></tr>`;
+    }).join('');
+}
+function toggleLock(k, v) { db.ref('seungri_v2026/registrations/'+k).update({isLocked: v}); }
+function setGlobalLock(s) { const up = {}; Object.keys(allAthletes).forEach(k => up[k+'/isLocked'] = s); db.ref('seungri_v2026/registrations').update(up); }
+function deleteVdv(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/registrations/'+k).remove(); }
+function exportData() {
+    const data = Object.values(allAthletes).map((r,i) => ({STT:i+1, Tên:r.name, CLB:r.club, Nội_Dung:r.category, Hạng_Cân:r.subType}));
+    const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "VDV"); XLSX.writeFile(wb, "SEUNGRI_2026.xlsx");
+}
+</script>
+</body>
+</html>
