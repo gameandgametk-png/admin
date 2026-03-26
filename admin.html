@@ -15,8 +15,6 @@
         input, select { background: #1f2937 !important; border: 1px solid #374151 !important; color: white !important; border-radius: 10px; padding: 10px 15px; outline: none; }
         .tab-main.active { background: #2563eb; color: white; shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
         .sub-tab.active { background: #334155; border-color: #64748b; }
-        
-        /* Bracket Style */
         .bracket-scroll { display: flex; gap: 60px; padding: 40px 20px; align-items: stretch; overflow-x: auto; }
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 250px; }
         .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 12px; margin: 25px 0; min-height: 100px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 0 12px 12px 0; }
@@ -25,8 +23,6 @@
         .is-winner { background: rgba(220, 38, 38, 0.15); color: #f87171; border-bottom-color: #dc2626; }
         .match-no-container { position: absolute; left: -50px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #64748b; font-size: 14px; }
         .score-input { width: 40px; background: transparent !important; border: none !important; text-align: center; font-weight: 900; color: #fbbf24 !important; font-size: 16px; }
-        
-        /* Medals */
         .medal-tag { padding: 12px; border-radius: 12px; font-weight: 800; display: flex; flex-direction: column; border-left: 6px solid #ddd; margin-bottom: 8px; width: 260px; }
         .gold { background: linear-gradient(to right, #45371c, #161d2f); border-color: #fbbf24; color: #fbbf24; }
         .silver { background: linear-gradient(to right, #334155, #161d2f); border-color: #94a3b8; color: #cbd5e1; }
@@ -41,7 +37,6 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <h2 class="text-3xl font-black uppercase italic mb-2 tracking-tighter">ADMIN ACCESS</h2>
-        <p class="text-slate-500 text-xs font-bold uppercase tracking-[4px] mb-8">Seung Ri Tournament 2026</p>
         <input type="password" id="passInput" class="w-full mb-4 py-4 text-center text-2xl tracking-[10px]" placeholder="••••••">
         <button onclick="checkAdminPass()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase shadow-lg hover:bg-blue-700 transition">Unlock Dashboard</button>
     </div>
@@ -52,7 +47,7 @@
         <div class="flex items-center gap-5">
             <h1 class="text-2xl font-black italic tracking-tighter">SEUNG RI <span class="text-blue-500 underline">PRO-ADMIN</span></h1>
             <div id="status" class="text-[10px] font-black uppercase text-green-500 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> SYSTEM ONLINE
+                <span id="db-indicator" class="w-2 h-2 bg-red-500 rounded-full"></span> <span id="db-text">OFFLINE</span>
             </div>
         </div>
         <nav class="flex bg-slate-900 p-1.5 rounded-2xl">
@@ -68,12 +63,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead class="text-[10px] font-black uppercase text-slate-500">
-                        <tr>
-                            <th class="p-4">Email Truy cập</th>
-                            <th class="p-4">Mật khẩu (HLV đặt)</th>
-                            <th class="p-4">Đơn vị Gần nhất</th>
-                            <th class="p-4 text-center">Thao tác</th>
-                        </tr>
+                        <tr><th class="p-4">Email Truy cập</th><th class="p-4">Mật khẩu</th><th class="p-4">Đơn vị</th><th class="p-4 text-center">Thao tác</th></tr>
                     </thead>
                     <tbody id="userListBody" class="font-bold text-sm divide-y divide-slate-800"></tbody>
                 </table>
@@ -100,14 +90,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead class="text-[10px] font-black uppercase text-slate-500">
-                        <tr>
-                            <th class="p-4">Họ và Tên</th>
-                            <th class="p-4">Đơn vị</th>
-                            <th class="p-4">Nội dung</th>
-                            <th class="p-4">Hạng cân / Lứa tuổi</th>
-                            <th class="p-4 text-center">Trạng thái</th>
-                            <th class="p-4 text-center">Xóa</th>
-                        </tr>
+                        <tr><th class="p-4">Họ và Tên</th><th class="p-4">Đơn vị</th><th class="p-4">Nội dung</th><th class="p-4">Hạng cân</th><th class="p-4 text-center">Trạng thái</th><th class="p-4 text-center">Xóa</th></tr>
                     </thead>
                     <tbody id="athleteTableBody" class="font-bold text-xs divide-y divide-slate-800"></tbody>
                 </table>
@@ -117,37 +100,29 @@
 
     <div id="sec-control" class="hidden space-y-6">
         <div class="flex bg-slate-900 p-1.5 rounded-2xl w-fit">
-            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent">Đối kháng / Kyorugi</button>
-            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Quyền / Poomsae</button>
-            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Tốc độ / Speed</button>
+            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent">Đối kháng</button>
+            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Quyền</button>
+            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Tốc độ</button>
         </div>
-
         <div class="grid lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 space-y-6">
                 <div class="admin-card p-6 border-t-4 border-red-600">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4">Nội dung thi đấu</h3>
                     <select id="bracketSelect" onchange="loadCurrentBracket()" class="w-full mb-4"></select>
-                    <button onclick="manualDraw()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase text-[10px] shadow-2xl hover:bg-red-500 transition mb-2">Bốc thăm lại nội dung này</button>
-                    <p class="text-[9px] text-slate-500 italic">* Lưu ý: Bốc thăm lại sẽ xóa toàn bộ kết quả trận đấu cũ của nội dung này.</p>
+                    <button onclick="manualDraw()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase text-[10px] shadow-2xl">Bốc thăm lại</button>
                 </div>
-                
                 <div class="admin-card p-6">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest">Bảng Huy Chương / Medals</h3>
-                    <div id="medalList" class="space-y-2">
-                        </div>
+                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest">Bảng Huy Chương</h3>
+                    <div id="medalList" class="space-y-2"></div>
                 </div>
             </div>
-
             <div class="lg:col-span-3 admin-card min-h-[800px] relative overflow-hidden bg-[#0e1422]">
-                <div id="bracketContent" class="bracket-scroll">
-                    </div>
+                <div id="bracketContent" class="bracket-scroll"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// --- CONFIG FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyBhN3Riezh-Ka20Salm1COtFbW9UdCLRdM",
   authDomain: "seungrichampionship-90984.firebaseapp.com",
@@ -167,21 +142,37 @@ let allAthletes = {};
 let allUsers = {};
 let allBrackets = {};
 
-// Protection
+// Kiểm tra kết nối
+db.ref('.info/connected').on('value', (s) => {
+    const ind = document.getElementById('db-indicator');
+    const txt = document.getElementById('db-text');
+    if (s.val()) {
+        ind.className = "w-2 h-2 bg-green-500 rounded-full animate-pulse";
+        txt.innerText = "SYSTEM ONLINE"; txt.className = "text-green-500";
+    }
+});
+
 function checkAdminPass() {
     if(document.getElementById('passInput').value === "admin123") {
         document.getElementById('loginOverlay').style.display = 'none';
         init();
-    } else alert("Sai mật khẩu quản trị!");
+    } else alert("Sai mật khẩu!");
 }
 
 function init() {
-    db.ref('users_v3').on('value', s => { allUsers = s.val() || {}; renderUserTable(); });
-    db.ref('registrations_v3').on('value', s => { allAthletes = s.val() || {}; renderAthleteTable(); updateBracketSelectors(); });
-    db.ref('brackets_v3').on('value', s => { allBrackets = s.val() || {}; loadCurrentBracket(); });
+    // NHÁNH DỮ LIỆU ĐÃ SỬA: seungri_v2026
+    db.ref('seungri_v2026/users').on('value', s => { allUsers = s.val() || {}; renderUserTable(); });
+    db.ref('seungri_v2026/registrations').on('value', s => { 
+        allAthletes = s.val() || {}; 
+        renderAthleteTable(); 
+        updateBracketSelectors(); 
+    });
+    db.ref('seungri_v2026/brackets').on('value', s => { 
+        allBrackets = s.val() || {}; 
+        loadCurrentBracket(); 
+    });
 }
 
-// ACCOUNT MANAGEMENT
 function renderUserTable() {
     const body = document.getElementById('userListBody');
     body.innerHTML = Object.keys(allUsers).map(key => {
@@ -189,18 +180,17 @@ function renderUserTable() {
         return `<tr>
             <td class="p-4 text-blue-400">${email}</td>
             <td class="p-4"><input type="text" value="${allUsers[key].pass}" onchange="updatePass('${key}', this.value)" class="!py-1 !text-xs !bg-slate-800"></td>
-            <td class="p-4 italic opacity-50" id="last-club-${key}">Loading...</td>
-            <td class="p-4 text-center"><button onclick="deleteUser('${key}')" class="text-red-500 hover:underline">Xóa</button></td>
+            <td class="p-4 italic opacity-50" id="club-${key}">Loading...</td>
+            <td class="p-4 text-center"><button onclick="deleteUser('${key}')" class="text-red-500">Xóa</button></td>
         </tr>`;
     }).join('');
     Object.keys(allUsers).forEach(key => {
-        db.ref('last_club_v3/'+key).once('value', s => { if(s.exists()) document.getElementById('last-club-'+key).innerText = s.val(); });
+        db.ref('seungri_v2026/last_club/'+key).once('value', s => { if(s.exists()) document.getElementById('club-'+key).innerText = s.val(); });
     });
 }
-function updatePass(key, newPass) { db.ref('users_v3/'+key).update({pass: newPass}); }
-function deleteUser(key) { if(confirm("Xóa tài khoản này?")) db.ref('users_v3/'+key).remove(); }
+function updatePass(k, p) { db.ref('seungri_v2026/users/'+k).update({pass: p}); }
+function deleteUser(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/users/'+k).remove(); }
 
-// ATHLETE MANAGEMENT
 function renderAthleteTable() {
     const body = document.getElementById('athleteTableBody');
     const search = document.getElementById('searchVdv').value.toLowerCase();
@@ -213,7 +203,7 @@ function renderAthleteTable() {
             <td class="p-4 uppercase">${r.name}</td>
             <td class="p-4 text-blue-400 uppercase">${r.club}</td>
             <td class="p-4 opacity-60">${r.category}</td>
-            <td class="p-4">${r.subType}</td>
+            <td class="p-4 text-[10px]">${r.subType}</td>
             <td class="p-4 text-center">
                 <button onclick="toggleLock('${key}', ${!r.isLocked})" class="px-3 py-1 rounded-lg ${r.isLocked?'bg-red-600':'bg-slate-700'}">${r.isLocked?'LOCKED':'OPEN'}</button>
             </td>
@@ -221,31 +211,23 @@ function renderAthleteTable() {
         </tr>`;
     }).join('');
 }
-function toggleLock(key, val) { db.ref('registrations_v3/'+key).update({isLocked: val}); }
-function setGlobalLock(status) {
-    const updates = {};
-    Object.keys(allAthletes).forEach(k => updates[k+'/isLocked'] = status);
-    db.ref('registrations_v3').update(updates);
+function toggleLock(k, v) { db.ref('seungri_v2026/registrations/'+k).update({isLocked: v}); }
+function setGlobalLock(s) {
+    const up = {}; Object.keys(allAthletes).forEach(k => up[k+'/isLocked'] = s);
+    db.ref('seungri_v2026/registrations').update(up);
 }
-function deleteVdv(key) { if(confirm("Xóa VĐV này?")) db.ref('registrations_v3/'+key).remove(); }
+function deleteVdv(k) { if(confirm("Xóa?")) db.ref('seungri_v2026/registrations/'+k).remove(); }
 
-// EXCEL EXPORT
 function exportData(type) {
     const list = Object.values(allAthletes);
     if(list.length === 0) return alert("Không có dữ liệu!");
-    let data = [];
-    if(type === 'club') {
-        data = list.sort((a,b) => a.club.localeCompare(b.club));
-    } else {
-        data = list.sort((a,b) => (a.category + a.subType).localeCompare(b.category + b.subType));
-    }
-    const ws = XLSX.utils.json_to_sheet(data.map((r,i) => ({STT: i+1, Tên: r.name, CLB: r.club, Nội_Dung: r.category, Hạng_Cân: r.subType})));
+    let sorted = type === 'club' ? list.sort((a,b) => a.club.localeCompare(b.club)) : list.sort((a,b) => (a.category + a.subType).localeCompare(b.category + b.subType));
+    const ws = XLSX.utils.json_to_sheet(sorted.map((r,i) => ({STT: i+1, Tên: r.name, CLB: r.club, Nội_Dung: r.category, Hạng_Cân: r.subType})));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "DANG_KY");
-    XLSX.writeFile(wb, `SEUNGRI_2026_EXPORT.xlsx`);
+    XLSX.writeFile(wb, `SEUNGRI_2026_ADMIN_EXPORT.xlsx`);
 }
 
-// CONTROL & BRACKETS
 function switchMain(id) {
     ['accounts', 'manage', 'control'].forEach(s => document.getElementById('sec-'+s).classList.add('hidden'));
     document.getElementById('sec-'+id).classList.remove('hidden');
@@ -257,7 +239,6 @@ function switchSub(id) {
     document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
     document.getElementById('sub-'+id).classList.add('active');
     updateBracketSelectors();
-    loadCurrentBracket();
 }
 function updateBracketSelectors() {
     const sel = document.getElementById('bracketSelect');
@@ -266,53 +247,42 @@ function updateBracketSelectors() {
     const currentVal = sel.value;
     sel.innerHTML = Array.from(cats).sort().map(c => `<option value="${c}">${c}</option>`).join('');
     if(currentVal && cats.has(currentVal)) sel.value = currentVal;
+    loadCurrentBracket();
 }
 
-// LOGIC BỐC THĂM CHUẨN
+// BỐC THĂM
 async function manualDraw() {
     const subType = document.getElementById('bracketSelect').value;
     if(!subType) return;
     const participants = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
-    if(participants.length < 2) return alert("Cần tối thiểu 2 VĐV để bốc thăm!");
+    if(participants.length < 2) return alert("Cần tối thiểu 2 VĐV!");
 
     const shuffled = participants.sort(() => Math.random() - 0.5);
     const size = Math.pow(2, Math.ceil(Math.log2(shuffled.length)));
-    
-    // Khởi tạo vòng 1 với BYE
-    let r1 = [];
-    const positions = getSeedPositions(size);
     let pArray = Array(size).fill(null).map(() => ({name: 'BYE', club: '-'}));
-    shuffled.forEach((p, i) => pArray[positions[i]] = {name: p.name, club: p.club});
+    const pos = size === 2 ? [0,1] : size === 4 ? [0,3,1,2] : size === 8 ? [0,7,3,4,1,6,2,5] : Array.from({length:size}, (_,i)=>i);
+    shuffled.forEach((p, i) => pArray[pos[i]] = {name: p.name, club: p.club});
 
+    let r1 = [];
     for(let i=0; i<size; i+=2) {
         let m = { p1: pArray[i], p2: pArray[i+1], winner: null, matchNo: (i/2 + 1), score: '' };
-        if(m.p2.name === 'BYE') m.winner = m.p1;
-        else if(m.p1.name === 'BYE') m.winner = m.p2;
+        if(m.p2.name === 'BYE') m.winner = m.p1; else if(m.p1.name === 'BYE') m.winner = m.p2;
         r1.push(m);
     }
-
     let rounds = [r1];
-    let prevR = r1;
-    while(prevR.length > 1) {
-        let nextR = [];
-        for(let j=0; j<prevR.length; j+=2) {
-            let m = { p1: prevR[j].winner || {name: '?'}, p2: prevR[j+1].winner || {name: '?'}, winner: null, matchNo: '', score: '' };
+    let prev = r1;
+    while(prev.length > 1) {
+        let next = [];
+        for(let j=0; j<prev.length; j+=2) {
+            let m = { p1: prev[j].winner || {name: '?'}, p2: prev[j+1].winner || {name: '?'}, winner: null, matchNo: '', score: '' };
             if(m.p1.name === 'BYE' && m.p2.name !== '?') m.winner = m.p2;
             if(m.p2.name === 'BYE' && m.p1.name !== '?') m.winner = m.p1;
-            nextR.push(m);
+            next.push(m);
         }
-        rounds.push(nextR); prevR = nextR;
+        rounds.push(next); prev = next;
     }
-    await db.ref(`brackets_v3/${currentSubTab} - ${subType}`).set({ rounds });
-    alert("Đã bốc thăm xong nội dung: " + subType);
-}
-
-function getSeedPositions(size) {
-    if(size === 2) return [0, 1];
-    if(size === 4) return [0, 3, 1, 2];
-    if(size === 8) return [0, 7, 3, 4, 1, 6, 2, 5];
-    if(size === 16) return [0, 15, 7, 8, 3, 12, 4, 11, 1, 14, 6, 9, 2, 13, 5, 10];
-    return Array.from({length: size}, (_, i) => i);
+    await db.ref(`seungri_v2026/brackets/${currentSubTab} - ${subType}`).set({ rounds });
+    alert("Xong!");
 }
 
 function loadCurrentBracket() {
@@ -322,8 +292,7 @@ function loadCurrentBracket() {
     area.innerHTML = "";
     if(!allBrackets[catKey]) return area.innerHTML = "<div class='p-20 text-center opacity-20 font-black text-4xl'>CHƯA BỐC THĂM</div>";
 
-    const rounds = allBrackets[catKey].rounds;
-    rounds.forEach((round, ri) => {
+    allBrackets[catKey].rounds.forEach((round, ri) => {
         const col = document.createElement('div');
         col.className = 'round-column';
         round.forEach((m, mi) => {
@@ -345,59 +314,51 @@ function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
     div.className = `player-line ${isWin?'is-winner':''} ${p.name==='BYE'?'opacity-20':''}`;
     div.innerHTML = `<div><span class="font-black uppercase">${p.name}</span><br><span class="text-[8px] opacity-50">${p.club}</span></div>`;
     if(p.name !== 'BYE' && p.name !== '?') {
-        const scoreInput = document.createElement('input');
-        scoreInput.className = 'score-input';
-        scoreInput.value = (isWin && score) ? score : '';
-        scoreInput.placeholder = "0";
-        scoreInput.onclick = (e) => e.stopPropagation();
-        scoreInput.onblur = (e) => updateMatchDetail(catKey, ri, mi, 'score', e.target.value);
-        div.appendChild(scoreInput);
+        const sc = document.createElement('input');
+        sc.className = 'score-input'; sc.value = (isWin && score) ? score : '';
+        sc.onclick = (e) => e.stopPropagation();
+        sc.onblur = (e) => updateMatchDetail(catKey, ri, mi, 'score', e.target.value);
+        div.appendChild(sc);
         div.onclick = () => setWinner(catKey, ri, mi, pNum);
     }
     return div;
 }
 
 async function setWinner(catKey, ri, mi, pNum) {
-    const bracket = allBrackets[catKey];
-    const m = bracket.rounds[ri][mi];
-    const winner = pNum === 1 ? m.p1 : m.p2;
-    if(winner.name === '?' || winner.name === 'BYE') return;
-    
-    bracket.rounds[ri][mi].winner = winner;
-    if(bracket.rounds[ri+1]) {
-        const nextMi = Math.floor(mi / 2);
-        if(mi % 2 === 0) bracket.rounds[ri+1][nextMi].p1 = winner;
-        else bracket.rounds[ri+1][nextMi].p2 = winner;
+    const b = allBrackets[catKey];
+    const m = b.rounds[ri][mi];
+    const win = pNum === 1 ? m.p1 : m.p2;
+    if(win.name === '?' || win.name === 'BYE') return;
+    b.rounds[ri][mi].winner = win;
+    if(b.rounds[ri+1]) {
+        const nMi = Math.floor(mi / 2);
+        if(mi % 2 === 0) b.rounds[ri+1][nMi].p1 = win;
+        else b.rounds[ri+1][nMi].p2 = win;
     }
-    await db.ref(`brackets_v3/${catKey}`).set(bracket);
+    await db.ref(`seungri_v2026/brackets/${catKey}`).set(b);
 }
 
-async function updateMatchDetail(catKey, ri, mi, field, val) {
-    await db.ref(`brackets_v3/${catKey}/rounds/${ri}/${mi}`).update({ [field]: val });
+async function updateMatchDetail(catKey, ri, mi, f, v) {
+    await db.ref(`seungri_v2026/brackets/${catKey}/rounds/${ri}/${mi}`).update({ [f]: v });
 }
 
 function renderMedals(catKey) {
-    const bracket = allBrackets[catKey];
-    const medalArea = document.getElementById('medalList');
-    medalArea.innerHTML = "";
-    const lastR = bracket.rounds[bracket.rounds.length - 1][0];
-    const semiR = bracket.rounds.length > 1 ? bracket.rounds[bracket.rounds.length - 2] : null;
-
-    const gold = lastR.winner;
-    const silver = gold ? (gold.name === lastR.p1.name ? lastR.p2 : lastR.p1) : null;
-    
-    medalArea.innerHTML += renderMedalTag('VÀNG / GOLD', gold, 'gold');
-    medalArea.innerHTML += renderMedalTag('BẠC / SILVER', silver, 'silver');
-    if(semiR) {
-        semiR.forEach(m => {
-            const b = m.winner.name === m.p1.name ? m.p2 : m.p1;
-            if(b.name !== 'BYE' && b.name !== '?') medalArea.innerHTML += renderMedalTag('ĐỒNG / BRONZE', b, 'bronze');
+    const b = allBrackets[catKey];
+    const area = document.getElementById('medalList'); area.innerHTML = "";
+    const last = b.rounds[b.rounds.length - 1][0];
+    const gold = last.winner;
+    const silver = gold ? (gold.name === last.p1.name ? last.p2 : last.p1) : null;
+    area.innerHTML += renderMedalTag('VÀNG', gold, 'gold');
+    area.innerHTML += renderMedalTag('BẠC', silver, 'silver');
+    if(b.rounds.length > 1) {
+        b.rounds[b.rounds.length - 2].forEach(m => {
+            const br = m.winner.name === m.p1.name ? m.p2 : m.p1;
+            if(br.name !== 'BYE' && br.name !== '?') area.innerHTML += renderMedalTag('ĐỒNG', br, 'bronze');
         });
     }
 }
-
-function renderMedalTag(label, p, style) {
-    return `<div class="medal-tag ${style}"><span class="text-[8px] uppercase opacity-60">${label}</span><span class="text-xs font-black uppercase">${p?.name || '---'}</span><span class="text-[9px] opacity-70 italic">${p?.club || ''}</span></div>`;
+function renderMedalTag(l, p, s) {
+    return `<div class="medal-tag ${s}"><span class="text-[8px] opacity-60">${l}</span><span class="text-xs font-black uppercase">${p?.name || '---'}</span></div>`;
 }
 </script>
 </body>
