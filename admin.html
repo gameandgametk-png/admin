@@ -3,401 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI 2026 - ADMIN CONTROL CENTER</title>
+    <title>SEUNG RI 2026 - ADMIN PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #0b0f19; color: #f1f5f9; overflow-x: hidden; }
-        .admin-card { background: #161d2f; border: 1px solid #232d45; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        input, select { background: #1f2937 !important; border: 1px solid #374151 !important; color: white !important; border-radius: 10px; padding: 10px 15px; outline: none; }
-        .tab-main.active { background: #2563eb; color: white; shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
-        .sub-tab.active { background: #334155; border-color: #64748b; }
-        
-        /* Bracket Style */
-        .bracket-scroll { display: flex; gap: 60px; padding: 40px 20px; align-items: stretch; overflow-x: auto; }
-        .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 250px; }
-        .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 12px; margin: 25px 0; min-height: 100px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 0 12px 12px 0; }
-        .player-line { height: 48px; border-bottom: 2px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; position: relative; }
-        .player-line:hover { background: rgba(59, 130, 246, 0.1); }
-        .is-winner { background: rgba(220, 38, 38, 0.15); color: #f87171; border-bottom-color: #dc2626; }
-        .match-no-container { position: absolute; left: -50px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #64748b; font-size: 14px; }
-        .score-input { width: 40px; background: transparent !important; border: none !important; text-align: center; font-weight: 900; color: #fbbf24 !important; font-size: 16px; }
-        
-        /* Medals */
-        .medal-tag { padding: 12px; border-radius: 12px; font-weight: 800; display: flex; flex-direction: column; border-left: 6px solid #ddd; margin-bottom: 8px; width: 260px; }
-        .gold { background: linear-gradient(to right, #45371c, #161d2f); border-color: #fbbf24; color: #fbbf24; }
-        .silver { background: linear-gradient(to right, #334155, #161d2f); border-color: #94a3b8; color: #cbd5e1; }
-        .bronze { background: linear-gradient(to right, #432b1e, #161d2f); border-color: #b45309; color: #d97706; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .admin-card { background: #1e293b; border: 1px solid #334151; border-radius: 20px; }
+        .tab-btn.active { background: #2563eb; color: white; }
+        /* Bracket Admin */
+        .bracket-scroll { display: flex; gap: 40px; padding: 20px; overflow-x: auto; }
+        .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 200px; }
+        .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 10px; margin: 15px 0; min-height: 100px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.02); }
+        .player-line { height: 45px; border-bottom: 1px solid #334151; padding: 5px 10px; cursor: pointer; }
+        .is-winner { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
     </style>
 </head>
 <body>
+    <div class="max-w-[1800px] mx-auto p-4 md:p-6">
+        <header class="flex justify-between items-center mb-8 p-6 admin-card border-b-4 border-blue-600">
+            <h1 class="text-2xl font-black italic">SEUNG RI <span class="text-blue-500">ADMIN</span></h1>
+            <nav class="flex bg-slate-800 p-1.5 rounded-2xl">
+                <button onclick="switchMain('users')" class="tab-btn active px-6 py-2 rounded-xl text-[10px] font-black uppercase">Tài khoản</button>
+                <button onclick="switchMain('control')" class="tab-btn px-6 py-2 rounded-xl text-[10px] font-black uppercase ml-2">Sơ đồ & Điều hành</button>
+            </nav>
+        </header>
 
-<div id="loginOverlay" class="fixed inset-0 bg-slate-950 z-[999] flex items-center justify-center p-4">
-    <div class="admin-card p-10 max-w-md w-full text-center">
-        <div class="bg-blue-600 w-16 h-16 rounded-3xl rotate-6 flex items-center justify-center mx-auto mb-6 shadow-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-        <h2 class="text-3xl font-black uppercase italic mb-2 tracking-tighter">ADMIN ACCESS</h2>
-        <p class="text-slate-500 text-xs font-bold uppercase tracking-[4px] mb-8">Seung Ri Tournament 2026</p>
-        <input type="password" id="passInput" class="w-full mb-4 py-4 text-center text-2xl tracking-[10px]" placeholder="••••••">
-        <button onclick="checkAdminPass()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase shadow-lg hover:bg-blue-700 transition">Unlock Dashboard</button>
-    </div>
-</div>
-
-<div class="max-w-[1850px] mx-auto p-4 md:p-6">
-    <header class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-6 p-6 admin-card border-b-4 border-blue-600">
-        <div class="flex items-center gap-5">
-            <h1 class="text-2xl font-black italic tracking-tighter">SEUNG RI <span class="text-blue-500 underline">PRO-ADMIN</span></h1>
-            <div id="status" class="text-[10px] font-black uppercase text-green-500 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> SYSTEM ONLINE
-            </div>
-        </div>
-        <nav class="flex bg-slate-900 p-1.5 rounded-2xl">
-            <button onclick="switchMain('accounts')" id="tab-accounts" class="tab-main active px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition">TÀI KHOẢN ĐOÀN</button>
-            <button onclick="switchMain('manage')" id="tab-manage" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">QUẢN LÝ VĐV</button>
-            <button onclick="switchMain('control')" id="tab-control" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2 bg-red-600/10 text-red-500">SƠ ĐỒ & ĐIỀU HÀNH</button>
-        </nav>
-    </header>
-
-    <div id="sec-accounts" class="space-y-6">
-        <div class="admin-card p-8">
-            <h2 class="text-xl font-black uppercase italic mb-6 border-b border-slate-800 pb-4">Danh sách Đơn vị & Mật khẩu</h2>
-            <div class="overflow-x-auto">
+        <div id="sec-users" class="space-y-6">
+            <div class="admin-card p-6">
                 <table class="w-full text-left">
-                    <thead class="text-[10px] font-black uppercase text-slate-500">
-                        <tr>
-                            <th class="p-4">Email Truy cập</th>
-                            <th class="p-4">Mật khẩu (HLV đặt)</th>
-                            <th class="p-4">Đơn vị Gần nhất</th>
-                            <th class="p-4 text-center">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userListBody" class="font-bold text-sm divide-y divide-slate-800"></tbody>
+                    <thead class="text-slate-500 text-[10px] uppercase"><tr><th class="p-4">Email</th><th class="p-4">Password</th><th class="p-4 text-center">Thao tác</th></tr></thead>
+                    <tbody id="userListBody"></tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-    <div id="sec-manage" class="hidden space-y-6">
-        <div class="flex flex-wrap gap-4 mb-2">
-            <div class="flex-1 flex gap-2">
-                <button onclick="setGlobalLock(true)" class="bg-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg">Khóa sửa toàn bộ</button>
-                <button onclick="setGlobalLock(false)" class="bg-green-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg">Mở khóa toàn bộ</button>
+        <div id="sec-control" class="hidden space-y-6">
+            <div class="admin-card p-6 flex gap-4 items-center">
+                <select id="bracketSelect" onchange="loadAdminBracket()" class="bg-slate-800 border-none rounded-xl p-3 w-64"></select>
+                <button onclick="manualDraw()" class="bg-red-600 px-6 py-3 rounded-xl font-black text-xs uppercase">Bốc thăm lại</button>
             </div>
-            <div class="flex gap-2">
-                <button onclick="exportData('club')" class="bg-blue-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất theo Đội</button>
-                <button onclick="exportData('content')" class="bg-emerald-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase">Xuất theo Nội dung</button>
-            </div>
-        </div>
-        <div class="admin-card p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-black uppercase italic">Tổng hợp Vận động viên</h2>
-                <input type="text" id="searchVdv" oninput="renderAthleteTable()" placeholder="Tìm tên hoặc đội..." class="w-64 !py-2 !text-xs">
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="text-[10px] font-black uppercase text-slate-500">
-                        <tr>
-                            <th class="p-4">Họ và Tên</th>
-                            <th class="p-4">Đơn vị</th>
-                            <th class="p-4">Nội dung</th>
-                            <th class="p-4">Hạng cân / Lứa tuổi</th>
-                            <th class="p-4 text-center">Trạng thái</th>
-                            <th class="p-4 text-center">Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody id="athleteTableBody" class="font-bold text-xs divide-y divide-slate-800"></tbody>
-                </table>
+            <div class="admin-card min-h-[600px] overflow-hidden">
+                <div id="adminBracketContent" class="bracket-scroll"></div>
             </div>
         </div>
     </div>
 
-    <div id="sec-control" class="hidden space-y-6">
-        <div class="flex bg-slate-900 p-1.5 rounded-2xl w-fit">
-            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent">Đối kháng / Kyorugi</button>
-            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Quyền / Poomsae</button>
-            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase border border-transparent ml-2">Tốc độ / Speed</button>
-        </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC00bfXhy9CaF7xVbVqTtcfJqDQfGBechw",
+            authDomain: "seungrichampionship-d3985.firebaseapp.com",
+            databaseURL: "https://seungrichampionship-d3985-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "seungrichampionship-d3985",
+            storageBucket: "seungrichampionship-d3985.firebasestorage.app",
+            messagingSenderId: "696543159443",
+            appId: "1:696543159443:web:59f4c558600929f4ee1966"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        <div class="grid lg:grid-cols-4 gap-6">
-            <div class="lg:col-span-1 space-y-6">
-                <div class="admin-card p-6 border-t-4 border-red-600">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4">Nội dung thi đấu</h3>
-                    <select id="bracketSelect" onchange="loadCurrentBracket()" class="w-full mb-4"></select>
-                    <button onclick="manualDraw()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase text-[10px] shadow-2xl hover:bg-red-500 transition mb-2">Bốc thăm lại nội dung này</button>
-                    <p class="text-[9px] text-slate-500 italic">* Lưu ý: Bốc thăm lại sẽ xóa toàn bộ kết quả trận đấu cũ của nội dung này.</p>
-                </div>
-                
-                <div class="admin-card p-6">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 tracking-widest">Bảng Huy Chương / Medals</h3>
-                    <div id="medalList" class="space-y-2">
-                        </div>
-                </div>
-            </div>
+        // 1. Tải tài khoản đoàn
+        db.ref('seungri_v2026/users').on('value', snap => {
+            const body = document.getElementById('userListBody');
+            body.innerHTML = "";
+            const data = snap.val();
+            if(!data) return;
+            Object.keys(data).forEach(key => {
+                const u = data[key];
+                body.innerHTML += `<tr class="border-b border-slate-800">
+                    <td class="p-4">${key.replace(/,/g,'.')}</td>
+                    <td class="p-4"><input type="text" value="${u.pass}" onchange="updatePass('${key}', this.value)" class="bg-slate-900 border-none p-1 rounded"></td>
+                    <td class="p-4 text-center"><button onclick="deleteUser('${key}')" class="text-red-500">Xóa</button></td>
+                </tr>`;
+            });
+        });
 
-            <div class="lg:col-span-3 admin-card min-h-[800px] relative overflow-hidden bg-[#0e1422]">
-                <div id="bracketContent" class="bracket-scroll">
-                    </div>
-            </div>
-        </div>
-    </div>
-</div>
+        function updatePass(key, pass) { db.ref('seungri_v2026/users/'+key).update({pass}); }
+        function deleteUser(key) { if(confirm("Xóa?")) db.ref('seungri_v2026/users/'+key).remove(); }
 
-<script>
-// --- CONFIG FIREBASE ---
-const firebaseConfig = {
-    apiKey: "AIzaSyC00bfXhy9CaF7xVbVqTtcfJqDQfGBechw",
-    authDomain: "seungrichampionship-d3985.firebaseapp.com",
-    databaseURL: "https://seungrichampionship-d3985-default-rtdb.asia-southeast1.firebasedatabase.app/",
-    projectId: "seungrichampionship-d3985",
-    storageBucket: "seungrichampionship-d3985.firebasestorage.app",
-    messagingSenderId: "696543159443",
-    appId: "1:696543159443:web:59f4c558600929f4ee1966"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-let currentSubTab = "Kyorugi";
-let allAthletes = {};
-let allUsers = {};
-let allBrackets = {};
-
-// Protection
-function checkAdminPass() {
-    if(document.getElementById('passInput').value === "admin123") {
-        document.getElementById('loginOverlay').style.display = 'none';
-        init();
-    } else alert("Sai mật khẩu quản trị!");
-}
-
-function init() {
-    db.ref('users_v3').on('value', s => { allUsers = s.val() || {}; renderUserTable(); });
-    db.ref('registrations_v3').on('value', s => { allAthletes = s.val() || {}; renderAthleteTable(); updateBracketSelectors(); });
-    db.ref('brackets_v3').on('value', s => { allBrackets = s.val() || {}; loadCurrentBracket(); });
-}
-
-// ACCOUNT MANAGEMENT
-function renderUserTable() {
-    const body = document.getElementById('userListBody');
-    body.innerHTML = Object.keys(allUsers).map(key => {
-        const email = key.replace(/,/g, '.');
-        return `<tr>
-            <td class="p-4 text-blue-400">${email}</td>
-            <td class="p-4"><input type="text" value="${allUsers[key].pass}" onchange="updatePass('${key}', this.value)" class="!py-1 !text-xs !bg-slate-800"></td>
-            <td class="p-4 italic opacity-50" id="last-club-${key}">Loading...</td>
-            <td class="p-4 text-center"><button onclick="deleteUser('${key}')" class="text-red-500 hover:underline">Xóa</button></td>
-        </tr>`;
-    }).join('');
-    Object.keys(allUsers).forEach(key => {
-        db.ref('last_club_v3/'+key).once('value', s => { if(s.exists()) document.getElementById('last-club-'+key).innerText = s.val(); });
-    });
-}
-function updatePass(key, newPass) { db.ref('users_v3/'+key).update({pass: newPass}); }
-function deleteUser(key) { if(confirm("Xóa tài khoản này?")) db.ref('users_v3/'+key).remove(); }
-
-// ATHLETE MANAGEMENT
-function renderAthleteTable() {
-    const body = document.getElementById('athleteTableBody');
-    const search = document.getElementById('searchVdv').value.toLowerCase();
-    body.innerHTML = Object.keys(allAthletes).filter(k => {
-        const r = allAthletes[k];
-        return r.name.toLowerCase().includes(search) || r.club.toLowerCase().includes(search);
-    }).map(key => {
-        const r = allAthletes[key];
-        return `<tr>
-            <td class="p-4 uppercase">${r.name}</td>
-            <td class="p-4 text-blue-400 uppercase">${r.club}</td>
-            <td class="p-4 opacity-60">${r.category}</td>
-            <td class="p-4">${r.subType}</td>
-            <td class="p-4 text-center">
-                <button onclick="toggleLock('${key}', ${!r.isLocked})" class="px-3 py-1 rounded-lg ${r.isLocked?'bg-red-600':'bg-slate-700'}">${r.isLocked?'LOCKED':'OPEN'}</button>
-            </td>
-            <td class="p-4 text-center"><button onclick="deleteVdv('${key}')" class="text-red-500">✕</button></td>
-        </tr>`;
-    }).join('');
-}
-function toggleLock(key, val) { db.ref('registrations_v3/'+key).update({isLocked: val}); }
-function setGlobalLock(status) {
-    const updates = {};
-    Object.keys(allAthletes).forEach(k => updates[k+'/isLocked'] = status);
-    db.ref('registrations_v3').update(updates);
-}
-function deleteVdv(key) { if(confirm("Xóa VĐV này?")) db.ref('registrations_v3/'+key).remove(); }
-
-// EXCEL EXPORT
-function exportData(type) {
-    const list = Object.values(allAthletes);
-    if(list.length === 0) return alert("Không có dữ liệu!");
-    let data = [];
-    if(type === 'club') {
-        data = list.sort((a,b) => a.club.localeCompare(b.club));
-    } else {
-        data = list.sort((a,b) => (a.category + a.subType).localeCompare(b.category + b.subType));
-    }
-    const ws = XLSX.utils.json_to_sheet(data.map((r,i) => ({STT: i+1, Tên: r.name, CLB: r.club, Nội_Dung: r.category, Hạng_Cân: r.subType})));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "DANG_KY");
-    XLSX.writeFile(wb, `SEUNGRI_2026_EXPORT.xlsx`);
-}
-
-// CONTROL & BRACKETS
-function switchMain(id) {
-    ['accounts', 'manage', 'control'].forEach(s => document.getElementById('sec-'+s).classList.add('hidden'));
-    document.getElementById('sec-'+id).classList.remove('hidden');
-    document.querySelectorAll('.tab-main').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-'+id).classList.add('active');
-}
-function switchSub(id) {
-    currentSubTab = id;
-    document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-    document.getElementById('sub-'+id).classList.add('active');
-    updateBracketSelectors();
-    loadCurrentBracket();
-}
-function updateBracketSelectors() {
-    const sel = document.getElementById('bracketSelect');
-    const cats = new Set();
-    Object.values(allAthletes).forEach(r => { if(r.category === currentSubTab) cats.add(r.subType); });
-    const currentVal = sel.value;
-    sel.innerHTML = Array.from(cats).sort().map(c => `<option value="${c}">${c}</option>`).join('');
-    if(currentVal && cats.has(currentVal)) sel.value = currentVal;
-}
-
-// LOGIC BỐC THĂM CHUẨN
-async function manualDraw() {
-    const subType = document.getElementById('bracketSelect').value;
-    if(!subType) return;
-    const participants = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
-    if(participants.length < 2) return alert("Cần tối thiểu 2 VĐV để bốc thăm!");
-
-    const shuffled = participants.sort(() => Math.random() - 0.5);
-    const size = Math.pow(2, Math.ceil(Math.log2(shuffled.length)));
-    
-    // Khởi tạo vòng 1 với BYE
-    let r1 = [];
-    const positions = getSeedPositions(size);
-    let pArray = Array(size).fill(null).map(() => ({name: 'BYE', club: '-'}));
-    shuffled.forEach((p, i) => pArray[positions[i]] = {name: p.name, club: p.club});
-
-    for(let i=0; i<size; i+=2) {
-        let m = { p1: pArray[i], p2: pArray[i+1], winner: null, matchNo: (i/2 + 1), score: '' };
-        if(m.p2.name === 'BYE') m.winner = m.p1;
-        else if(m.p1.name === 'BYE') m.winner = m.p2;
-        r1.push(m);
-    }
-
-    let rounds = [r1];
-    let prevR = r1;
-    while(prevR.length > 1) {
-        let nextR = [];
-        for(let j=0; j<prevR.length; j+=2) {
-            let m = { p1: prevR[j].winner || {name: '?'}, p2: prevR[j+1].winner || {name: '?'}, winner: null, matchNo: '', score: '' };
-            if(m.p1.name === 'BYE' && m.p2.name !== '?') m.winner = m.p2;
-            if(m.p2.name === 'BYE' && m.p1.name !== '?') m.winner = m.p1;
-            nextR.push(m);
+        // 2. Bốc thăm & Điều hành
+        function switchMain(id) {
+            document.getElementById('sec-users').classList.toggle('hidden', id !== 'users');
+            document.getElementById('sec-control').classList.toggle('hidden', id !== 'control');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            if(id === 'control') {
+                db.ref('seungri_v2026/registrations').once('value', snap => {
+                    const regs = snap.val();
+                    const cats = new Set();
+                    if(regs) Object.values(regs).forEach(r => cats.add(`${r.category} - ${r.subType}`));
+                    document.getElementById('bracketSelect').innerHTML = Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
+                });
+            }
         }
-        rounds.push(nextR); prevR = nextR;
-    }
-    await db.ref(`brackets_v3/${currentSubTab} - ${subType}`).set({ rounds });
-    alert("Đã bốc thăm xong nội dung: " + subType);
-}
 
-function getSeedPositions(size) {
-    if(size === 2) return [0, 1];
-    if(size === 4) return [0, 3, 1, 2];
-    if(size === 8) return [0, 7, 3, 4, 1, 6, 2, 5];
-    if(size === 16) return [0, 15, 7, 8, 3, 12, 4, 11, 1, 14, 6, 9, 2, 13, 5, 10];
-    return Array.from({length: size}, (_, i) => i);
-}
+        async function manualDraw() {
+            const cat = document.getElementById('bracketSelect').value;
+            const snap = await db.ref('seungri_v2026/registrations').once('value');
+            const players = Object.values(snap.val()).filter(r => `${r.category} - ${r.subType}` === cat).sort(() => Math.random() - 0.5);
+            // Thuật toán đơn giản tạo vòng 1
+            const size = Math.pow(2, Math.ceil(Math.log2(players.length))) || 2;
+            let r1 = [];
+            for(let i=0; i<size; i+=2) {
+                let p1 = players[i] || {name:'BYE', club:'-'};
+                let p2 = players[i+1] || {name:'BYE', club:'-'};
+                let m = {p1, p2, winner: null, matchNo: (i/2+1)};
+                if(p1.name==='BYE') m.winner = p2; else if(p2.name==='BYE') m.winner = p1;
+                r1.push(m);
+            }
+            let rounds = [r1];
+            while(r1.length > 1) {
+                let nextR = [];
+                for(let j=0; j<r1.length; j+=2) {
+                    nextR.push({p1: r1[j].winner || {name:'?'}, p2: r1[j+1].winner || {name:'?'}, winner: null});
+                }
+                rounds.push(nextR); r1 = nextR;
+            }
+            await db.ref('seungri_v2026/brackets/' + cat).set({rounds});
+            alert("Bốc thăm xong!");
+        }
 
-function loadCurrentBracket() {
-    const subType = document.getElementById('bracketSelect').value;
-    const catKey = `${currentSubTab} - ${subType}`;
-    const area = document.getElementById('bracketContent');
-    area.innerHTML = "";
-    if(!allBrackets[catKey]) return area.innerHTML = "<div class='p-20 text-center opacity-20 font-black text-4xl'>CHƯA BỐC THĂM</div>";
-
-    const rounds = allBrackets[catKey].rounds;
-    rounds.forEach((round, ri) => {
-        const col = document.createElement('div');
-        col.className = 'round-column';
-        round.forEach((m, mi) => {
-            const box = document.createElement('div');
-            box.className = 'match-box';
-            box.innerHTML = `<div class="match-no-container">(<input type="text" value="${m.matchNo || ''}" onblur="updateMatchDetail('${catKey}',${ri},${mi},'matchNo',this.value)" class="!bg-transparent !p-0 !w-8 !border-none !text-center !text-blue-500">)</div>`;
-            box.appendChild(renderSlot(catKey, ri, mi, 1, m.p1, m.winner, m.score));
-            box.appendChild(renderSlot(catKey, ri, mi, 2, m.p2, m.winner, m.score));
-            col.appendChild(box);
+        db.ref('seungri_v2026/brackets').on('value', snap => {
+            window.allBrackets = snap.val() || {};
+            loadAdminBracket();
         });
-        area.appendChild(col);
-    });
-    renderMedals(catKey);
-}
 
-function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
-    const isWin = winner && winner.name === p.name && p.name !== 'BYE';
-    const div = document.createElement('div');
-    div.className = `player-line ${isWin?'is-winner':''} ${p.name==='BYE'?'opacity-20':''}`;
-    div.innerHTML = `<div><span class="font-black uppercase">${p.name}</span><br><span class="text-[8px] opacity-50">${p.club}</span></div>`;
-    if(p.name !== 'BYE' && p.name !== '?') {
-        const scoreInput = document.createElement('input');
-        scoreInput.className = 'score-input';
-        scoreInput.value = (isWin && score) ? score : '';
-        scoreInput.placeholder = "0";
-        scoreInput.onclick = (e) => e.stopPropagation();
-        scoreInput.onblur = (e) => updateMatchDetail(catKey, ri, mi, 'score', e.target.value);
-        div.appendChild(scoreInput);
-        div.onclick = () => setWinner(catKey, ri, mi, pNum);
-    }
-    return div;
-}
+        function loadAdminBracket() {
+            const cat = document.getElementById('bracketSelect').value;
+            const area = document.getElementById('adminBracketContent');
+            if(!cat || !window.allBrackets[cat]) return area.innerHTML = "";
+            area.innerHTML = window.allBrackets[cat].rounds.map((round, ri) => `
+                <div class="round-column">
+                    ${round.map((m, mi) => `
+                        <div class="match-box">
+                            <div class="player-line ${m.winner?.name===m.p1.name?'is-winner':''}" onclick="setWinner('${cat}',${ri},${mi},1)">${m.p1.name}</div>
+                            <div class="player-line ${m.winner?.name===m.p2.name?'is-winner':''}" onclick="setWinner('${cat}',${ri},${mi},2)">${m.p2.name}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
 
-async function setWinner(catKey, ri, mi, pNum) {
-    const bracket = allBrackets[catKey];
-    const m = bracket.rounds[ri][mi];
-    const winner = pNum === 1 ? m.p1 : m.p2;
-    if(winner.name === '?' || winner.name === 'BYE') return;
-    
-    bracket.rounds[ri][mi].winner = winner;
-    if(bracket.rounds[ri+1]) {
-        const nextMi = Math.floor(mi / 2);
-        if(mi % 2 === 0) bracket.rounds[ri+1][nextMi].p1 = winner;
-        else bracket.rounds[ri+1][nextMi].p2 = winner;
-    }
-    await db.ref(`brackets_v3/${catKey}`).set(bracket);
-}
-
-async function updateMatchDetail(catKey, ri, mi, field, val) {
-    await db.ref(`brackets_v3/${catKey}/rounds/${ri}/${mi}`).update({ [field]: val });
-}
-
-function renderMedals(catKey) {
-    const bracket = allBrackets[catKey];
-    const medalArea = document.getElementById('medalList');
-    medalArea.innerHTML = "";
-    const lastR = bracket.rounds[bracket.rounds.length - 1][0];
-    const semiR = bracket.rounds.length > 1 ? bracket.rounds[bracket.rounds.length - 2] : null;
-
-    const gold = lastR.winner;
-    const silver = gold ? (gold.name === lastR.p1.name ? lastR.p2 : lastR.p1) : null;
-    
-    medalArea.innerHTML += renderMedalTag('VÀNG / GOLD', gold, 'gold');
-    medalArea.innerHTML += renderMedalTag('BẠC / SILVER', silver, 'silver');
-    if(semiR) {
-        semiR.forEach(m => {
-            const b = m.winner.name === m.p1.name ? m.p2 : m.p1;
-            if(b.name !== 'BYE' && b.name !== '?') medalArea.innerHTML += renderMedalTag('ĐỒNG / BRONZE', b, 'bronze');
-        });
-    }
-}
-
-function renderMedalTag(label, p, style) {
-    return `<div class="medal-tag ${style}"><span class="text-[8px] uppercase opacity-60">${label}</span><span class="text-xs font-black uppercase">${p?.name || '---'}</span><span class="text-[9px] opacity-70 italic">${p?.club || ''}</span></div>`;
-}
-</script>
+        async function setWinner(cat, ri, mi, pNum) {
+            const bracket = window.allBrackets[cat];
+            const m = bracket.rounds[ri][mi];
+            const win = pNum === 1 ? m.p1 : m.p2;
+            if(win.name === 'BYE' || win.name === '?') return;
+            bracket.rounds[ri][mi].winner = win;
+            if(bracket.rounds[ri+1]) {
+                let nextMi = Math.floor(mi/2);
+                if(mi%2===0) bracket.rounds[ri+1][nextMi].p1 = win; else bracket.rounds[ri+1][nextMi].p2 = win;
+            }
+            await db.ref('seungri_v2026/brackets/' + cat).set(bracket);
+        }
+    </script>
 </body>
 </html>
