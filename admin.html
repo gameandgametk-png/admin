@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI 2026 - ADMIN ULTIMATE V5</title>
+    <title>SEUNG RI 2026 - ADMIN ULTIMATE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -11,22 +11,21 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0b1120; color: #f1f5f9; overflow-x: hidden; }
-        .admin-card { background: #161e31; border: 1px solid #2d3748; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        input, select { background: #1f2937 !important; border: 1px solid #374151 !important; color: white !important; border-radius: 10px; padding: 10px; outline: none; }
+        .admin-card { background: #161e31; border: 1px solid #2d3748; border-radius: 20px; }
+        input, select { background: #1f2937 !important; border: 1px solid #374151 !important; color: white !important; border-radius: 10px; padding: 10px; outline: none; width: 100%; }
         .tab-main.active { background: #2563eb; color: white; shadow: 0 0 15px rgba(37,99,235,0.4); }
         .sub-tab.active { background: #334155; border-color: #4a5568; color: white; }
         .bracket-scroll { display: flex; gap: 60px; padding: 60px 20px; align-items: stretch; overflow-x: auto; }
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 260px; position: relative; }
         .round-name { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); font-weight: 900; color: #3b82f6; text-transform: uppercase; font-size: 10px; }
-        .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 12px; margin: 25px 0; min-height: 90px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 0 10px 10px 0; }
+        .match-box { position: relative; border-left: 4px solid #3b82f6; padding-left: 12px; margin: 25px 0; min-height: 90px; background: rgba(255,255,255,0.03); border-radius: 0 10px 10px 0; display: flex; flex-direction: column; justify-content: center; }
         .player-line { height: 42px; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; font-size: 0.7rem; cursor: pointer; }
-        .is-winner { background: rgba(34, 197, 94, 0.2) !important; color: #4ade80 !important; border-bottom-color: #22c55e !important; font-weight: 900; }
+        .is-winner { background: rgba(220, 38, 38, 0.2) !important; color: #f87171 !important; border-bottom-color: #dc2626 !important; font-weight: 900; }
         .is-loss { opacity: 0.3; }
-        .score-input { width: 45px; background: #1e293b !important; border: none !important; text-align: center; font-weight: 900; color: #fbbf24 !important; }
+        .score-input { width: 45px; background: #1e293b !important; border: none !important; text-align: center; font-weight: 900; color: #fbbf24 !important; border-radius: 6px; }
         .medal-tag { padding: 10px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 10px; border-left: 5px solid #ddd; margin-bottom: 6px; }
         .gold { background: linear-gradient(to right, #45371c, #161e31); border-color: #fbbf24; color: #fbbf24; }
         .silver { background: linear-gradient(to right, #334155, #161e31); border-color: #94a3b8; color: #cbd5e1; }
-        .bronze { background: linear-gradient(to right, #432b1e, #161e31); border-color: #b45309; color: #d97706; }
     </style>
 </head>
 <body>
@@ -35,17 +34,17 @@
     <div class="admin-card p-10 max-w-md w-full text-center">
         <h2 class="text-3xl font-black uppercase italic mb-8">ADMIN ACCESS</h2>
         <input type="password" id="passInput" class="w-full mb-4 py-4 text-center text-2xl tracking-[10px]" placeholder="••••••">
-        <button onclick="checkAdminPass()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase shadow-lg">Login</button>
+        <button onclick="checkAdminPass()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase">Login</button>
     </div>
 </div>
 
 <div class="max-w-[1850px] mx-auto p-4 md:p-6">
     <header class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-6 p-6 admin-card border-b-4 border-blue-600">
-        <h1 class="text-2xl font-black italic uppercase">Seung Ri <span class="text-blue-500">Tournament</span></h1>
+        <h1 class="text-2xl font-black italic uppercase tracking-tighter">Seung Ri <span class="text-blue-500">Admin</span></h1>
         <nav class="flex bg-slate-900 p-1.5 rounded-2xl">
             <button onclick="switchMain('accounts')" id="tab-accounts" class="tab-main active px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition">Tài khoản</button>
-            <button onclick="switchMain('manage')" id="tab-manage" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase ml-2">Quản lý</button>
-            <button onclick="switchMain('control')" id="tab-control" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase ml-2 bg-red-600/10 text-red-500">Điều hành</button>
+            <button onclick="switchMain('manage')" id="tab-manage" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Quản lý</button>
+            <button onclick="switchMain('control')" id="tab-control" class="tab-main px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2 bg-red-600/10 text-red-500">Điều hành</button>
         </nav>
     </header>
 
@@ -55,14 +54,8 @@
 
     <div id="sec-manage" class="hidden space-y-6">
         <div class="flex flex-wrap gap-4 items-center admin-card p-4">
-            <input type="text" id="searchName" oninput="renderAthleteTable()" placeholder="Tìm tên..." class="w-48">
-            <select id="filterClub" onchange="renderAthleteTable()" class="w-48"><option value="">Tất cả đơn vị</option></select>
-            <select id="filterCategory" onchange="renderAthleteTable()" class="w-48">
-                <option value="">Tất cả nội dung</option>
-                <option value="Kyorugi">Đối kháng</option>
-                <option value="Poomsae">Quyền</option>
-                <option value="Speed">Tốc độ</option>
-            </select>
+            <input type="text" id="searchName" oninput="renderAthleteTable()" placeholder="Tìm tên..." class="!w-48">
+            <select id="filterClub" onchange="renderAthleteTable()" class="!w-48"><option value="">Tất cả đơn vị</option></select>
             <button onclick="exportExcel()" class="bg-green-600 px-6 py-2.5 rounded-xl font-black text-[10px] uppercase ml-auto">Xuất Excel</button>
         </div>
         <div class="admin-card p-8"><div class="overflow-x-auto"><table class="w-full text-left text-xs divide-y divide-slate-800"><tbody id="athleteTableBody"></tbody></table></div></div>
@@ -70,20 +63,19 @@
 
     <div id="sec-control" class="hidden space-y-6">
         <div class="flex bg-slate-900 p-1.5 rounded-2xl w-fit">
-            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase">Đối kháng</button>
-            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase ml-2">Quyền</button>
-            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase ml-2">Tốc độ</button>
+            <button onclick="switchSub('Kyorugi')" id="sub-Kyorugi" class="sub-tab active px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition">Đối kháng</button>
+            <button onclick="switchSub('Poomsae')" id="sub-Poomsae" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Quyền</button>
+            <button onclick="switchSub('Speed')" id="sub-Speed" class="sub-tab px-8 py-2.5 rounded-xl font-black text-[10px] uppercase transition ml-2">Tốc độ</button>
         </div>
 
         <div class="grid lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 space-y-6">
                 <div class="admin-card p-6 border-t-4 border-red-600">
-                    <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Nội dung thi đấu:</label>
                     <select id="bracketSelect" onchange="loadCurrentBracket()" class="w-full mb-4"></select>
-                    <button onclick="handleManualDraw()" class="w-full bg-red-600 py-3 rounded-xl font-black uppercase text-[10px] shadow-lg italic">BỐC THĂM / CHIA NHÓM</button>
+                    <button onclick="handleManualDraw()" class="w-full bg-red-600 py-3 rounded-xl font-black uppercase text-[10px] shadow-lg">BỐC THĂM / CHIA NHÓM</button>
                 </div>
                 <div class="admin-card p-6">
-                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 text-center italic underline">🥇 Huy chương tab <span id="medalTabName">...</span></h3>
+                    <h3 class="text-xs font-black uppercase text-slate-500 mb-4 text-center">🥇 Huy chương</h3>
                     <div id="medalList" class="space-y-2"></div>
                 </div>
             </div>
@@ -116,7 +108,7 @@ function checkAdminPass() {
     if(document.getElementById('passInput').value === "admin123") {
         document.getElementById('loginOverlay').style.display = 'none';
         init();
-    } else alert("Mật khẩu sai!");
+    } else alert("Sai mật khẩu!");
 }
 
 function init() {
@@ -124,10 +116,7 @@ function init() {
     db.ref(`${root}/registrations`).on('value', s => { 
         allAthletes = s.val() || {}; renderAthleteTable(); updateBracketSelectors(); updateClubFilter();
     });
-    db.ref(`${root}/brackets`).on('value', s => { 
-        allBrackets = s.val() || {}; 
-        loadCurrentBracket(); 
-    });
+    db.ref(`${root}/brackets`).on('value', s => { allBrackets = s.val() || {}; loadCurrentBracket(); });
 }
 
 function switchMain(id) {
@@ -145,15 +134,26 @@ function switchSub(id) {
 function updateBracketSelectors() {
     const sel = document.getElementById('bracketSelect');
     const cats = new Set();
-    Object.values(allAthletes).forEach(r => { if(r.category === currentSubTab) cats.add(r.subType); });
+    Object.values(allAthletes).forEach(r => {
+        const isPoomsae = r.category.includes('Quyền');
+        if(currentSubTab === 'Kyorugi' && r.category === 'Kyorugi') cats.add(r.subType);
+        if(currentSubTab === 'Poomsae' && isPoomsae) cats.add(`${r.category} - ${r.subType}`);
+        if(currentSubTab === 'Speed' && r.category === 'Speed') cats.add(r.subType);
+    });
     sel.innerHTML = Array.from(cats).sort().map(c => `<option value="${c}">${c}</option>`).join('');
     loadCurrentBracket();
 }
 
 async function handleManualDraw() {
     const subType = document.getElementById('bracketSelect').value;
-    if(!subType || !confirm(`Xác nhận bốc thăm nội dung: ${subType}?`)) return;
-    const participants = Object.values(allAthletes).filter(r => r.category === currentSubTab && r.subType === subType);
+    if(!subType || !confirm(`Xác nhận bốc thăm/chia nhóm nội dung: ${subType}?`)) return;
+    
+    // Lọc VĐV
+    const participants = Object.values(allAthletes).filter(r => {
+        const fullCat = r.category.includes('Quyền') ? `${r.category} - ${r.subType}` : r.subType;
+        return fullCat === subType;
+    });
+
     if(participants.length < 2) return alert("Cần tối thiểu 2 VĐV!");
     const shuffled = participants.sort(() => Math.random() - 0.5);
 
@@ -162,17 +162,16 @@ async function handleManualDraw() {
         for (let i = 0; i < shuffled.length; i += 4) {
             groups.push({ groupId: Math.floor(i/4) + 1, players: shuffled.slice(i, i + 4).map(p => ({name: p.name, club: p.club, score: 0, rank: ''})) });
         }
-        await db.ref(`${root}/brackets/Speed - ${subType}`).set({ type: 'Speed', groups });
+        await db.ref(`${root}/brackets/${subType}`).set({ type: 'Speed', groups });
     } else if(currentSubTab === 'Poomsae') {
         const pGroups = [];
         for (let i = 0; i < shuffled.length; i += 4) {
             pGroups.push({ groupId: Math.floor(i/4) + 1, rounds: buildKnockoutRounds(shuffled.slice(i, i + 4)) });
         }
-        await db.ref(`${root}/brackets/Poomsae - ${subType}`).set({ type: 'PoomsaeGroup', groups: pGroups });
+        await db.ref(`${root}/brackets/${subType}`).set({ type: 'PoomsaeGroup', groups: pGroups });
     } else {
-        await db.ref(`${root}/brackets/Kyorugi - ${subType}`).set({ type: 'Knockout', rounds: buildKnockoutRounds(shuffled) });
+        await db.ref(`${root}/brackets/${subType}`).set({ type: 'Knockout', rounds: buildKnockoutRounds(shuffled) });
     }
-    alert("Bốc thăm thành công!");
 }
 
 function buildKnockoutRounds(players) {
@@ -197,27 +196,22 @@ function buildKnockoutRounds(players) {
 
 function loadCurrentBracket() {
     const subType = document.getElementById('bracketSelect').value;
-    const catKey = `${currentSubTab} - ${subType}`;
     const bArea = document.getElementById('bracketContent'), sArea = document.getElementById('speedContent');
-    document.getElementById('medalTabName').innerText = currentSubTab;
-    
-    // Dọn sạch
     bArea.innerHTML = ""; document.getElementById('speedTableContainer').innerHTML = "";
     bArea.classList.remove('hidden'); sArea.classList.add('hidden');
 
-    if(!allBrackets[catKey]) {
-        bArea.innerHTML = `<div class='p-20 text-center opacity-20 font-black text-4xl uppercase'>Chưa bốc thăm [${catKey}]</div>`;
-        document.getElementById('medalList').innerHTML = "";
-        return;
+    if(!allBrackets[subType]) {
+        bArea.innerHTML = `<div class='p-20 text-center opacity-20 font-black text-4xl uppercase'>Chưa bốc thăm [${subType}]</div>`;
+        document.getElementById('medalList').innerHTML = ""; return;
     }
 
-    const b = allBrackets[catKey];
+    const b = allBrackets[subType];
     if(b.type === 'Speed') {
-        bArea.classList.add('hidden'); sArea.classList.remove('hidden'); renderSpeedTable(catKey);
+        bArea.classList.add('hidden'); sArea.classList.remove('hidden'); renderSpeedTable(subType);
     } else if(b.type === 'PoomsaeGroup') {
-        renderPoomsaeGroups(catKey);
+        renderPoomsaeGroups(subType);
     } else {
-        renderKnockoutBracket(catKey, b.rounds);
+        renderKnockoutBracket(subType, b.rounds);
     }
 }
 
@@ -225,7 +219,7 @@ function renderPoomsaeGroups(catKey) {
     const area = document.getElementById('bracketContent');
     allBrackets[catKey].groups.forEach((g, gIdx) => {
         const wrap = document.createElement('div'); wrap.className = 'mb-10 p-6 admin-card border-l-8 border-blue-600';
-        wrap.innerHTML = `<h3 class="text-blue-500 font-black mb-6 uppercase tracking-widest">Nhóm ${g.groupId}</h3>`;
+        wrap.innerHTML = `<h3 class="text-blue-500 font-black mb-6 uppercase">Nhóm ${g.groupId}</h3>`;
         const bDiv = document.createElement('div'); bDiv.className = 'flex gap-10';
         g.rounds.forEach((round, ri) => {
             const col = document.createElement('div'); col.className = 'round-column';
@@ -248,7 +242,7 @@ function renderKnockoutBracket(catKey, rounds) {
     const area = document.getElementById('bracketContent');
     rounds.forEach((round, ri) => {
         const col = document.createElement('div'); col.className = 'round-column';
-        col.innerHTML = `<div class="round-name">${ri === rounds.length-1 ? "Chung kết" : ri === rounds.length-2 ? "Bán kết" : "Vòng loại"}</div>`;
+        col.innerHTML = `<div class="round-name">${ri === rounds.length-1 ? "Chung kết" : "Vòng loại"}</div>`;
         round.forEach((m, mi) => {
             const box = document.createElement('div'); box.className = 'match-box';
             box.innerHTML = `<div class="match-no-label">No.<input type="text" value="${m.matchNo || ''}" onblur="updateMatchDetail('${catKey}',${ri},${mi},'matchNo',this.value)" class="w-8 bg-slate-800 text-center text-[9px]"></div>`;
@@ -265,7 +259,7 @@ function renderSlot(catKey, ri, mi, pNum, p, winner, score) {
     const isWin = winner && winner.name === p.name;
     const isLoss = winner && winner.name !== p.name && p.name !== 'BYE';
     const div = document.createElement('div');
-    div.className = `player-line ${isWin?'is-winner':''} ${isLoss?'is-loss':''} ${p.name==='BYE'?'opacity-20':''}`;
+    div.className = `player-line ${isWin?'is-winner':''} ${isLoss?'opacity-30':''} ${p.name==='BYE'?'opacity-20':''}`;
     div.innerHTML = `<div><span class="font-black uppercase">${p.name}</span><br><span class="text-[8px] opacity-50">${p.club}</span></div>`;
     if(p.name !== 'BYE' && p.name !== '?') {
         const sc = document.createElement('input'); sc.className = 'score-input'; sc.value = isWin ? score : '';
@@ -279,7 +273,7 @@ function renderSlotGroup(catKey, gIdx, ri, mi, pNum, p, winner, score) {
     const isWin = winner && winner.name === p.name;
     const isLoss = winner && winner.name !== p.name && p.name !== 'BYE';
     const div = document.createElement('div');
-    div.className = `player-line ${isWin?'is-winner':''} ${isLoss?'is-loss':''} ${p.name==='BYE'?'opacity-20':''}`;
+    div.className = `player-line ${isWin?'is-winner':''} ${isLoss?'opacity-30':''} ${p.name==='BYE'?'opacity-20':''}`;
     div.innerHTML = `<div><span class="font-black uppercase">${p.name}</span><br><span class="text-[8px] opacity-50">${p.club}</span></div>`;
     if(p.name !== 'BYE' && p.name !== '?') {
         const sc = document.createElement('input'); sc.className = 'score-input'; sc.value = isWin ? score : '';
@@ -339,7 +333,6 @@ async function updateSpeedScore(catKey, gIdx, pIdx, val) {
 function renderMedals(catKey) {
     const area = document.getElementById('medalList'); area.innerHTML = "";
     const b = allBrackets[catKey]; if(!b) return;
-
     if(b.type === 'Speed') {
         b.groups.forEach(g => g.players.filter(p => p.rank).forEach(p => area.innerHTML += renderMedalTag(p.rank + ` (N${g.groupId})`, p, p.rank.toLowerCase())));
     } else if(b.type === 'PoomsaeGroup') {
@@ -349,18 +342,13 @@ function renderMedals(catKey) {
             if(sP && sP.name !== 'BYE') area.innerHTML += renderMedalTag(`BẠC (N${g.groupId})`, sP, 'silver');
         });
     } else {
-        const last = b.rounds[b.rounds.length-1][0], g = last.winner, s = g ? (g.name === last.p1.name ? last.p2 : last.p1) : null;
+        const last = b.rounds[b.rounds.length-1][0], g = last.winner;
         if(g) area.innerHTML += renderMedalTag('VÀNG', g, 'gold');
-        if(s && s.name !== 'BYE') area.innerHTML += renderMedalTag('BẠC', s, 'silver');
     }
 }
 
-function renderMedalTag(l, p, s) { 
-    const icon = l.includes('VÀNG') || l.includes('GOLD') ? '🥇' : l.includes('BẠC') || l.includes('SILVER') ? '🥈' : '🥉';
-    return `<div class="medal-tag ${s}"><span class="text-xl">${icon}</span><div><span class="text-[8px] opacity-60 uppercase">${l}</span><br><span class="text-xs font-black uppercase">${p?.name || '---'}</span></div></div>`; 
-}
+function renderMedalTag(l, p, s) { return `<div class="medal-tag ${s}"><span class="text-xl">🥇</span><div><span class="text-[8px] opacity-60 uppercase">${l}</span><br><span class="text-xs font-black uppercase">${p?.name || '---'}</span></div></div>`; }
 
-// MANAGEMENT
 function renderAthleteTable() {
     const body = document.getElementById('athleteTableBody'); body.innerHTML = "";
     const nameS = document.getElementById('searchName').value.toLowerCase();
