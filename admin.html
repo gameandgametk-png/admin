@@ -3,59 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI LIVE - Perfect Alignment Edition</title>
+    <title>SEUNG RI LIVE - TOURNAMENT 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         #captureArea { background-color: #ffffff; padding: 20px; width: fit-content !important; min-width: 100%; }
-        .group-container { border: 2px solid #e2e8f0; border-radius: 1.25rem; padding: 2.5rem; margin-bottom: 3rem; background: white; width: max-content !important; min-width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .group-container { border: 2px solid #e2e8f0; border-radius: 1.25rem; padding: 2rem; margin-bottom: 3rem; background: white; width: max-content !important; min-width: 100%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
         .bracket-scroll { display: flex; gap: 4rem; padding: 1.5rem 0.5rem; align-items: stretch; width: max-content; }
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 250px; }
         .match-box { position: relative; border-left: 4px solid #334155; padding-left: 12px; margin: 25px 0; min-height: 110px; display: flex; flex-direction: column; justify-content: center; }
-        
-        /* Ô VUÔNG SỐ TRẬN - CĂN TÂM TUYỆT ĐỐI */
-        .match-number-box { 
-            position: absolute; left: -45px; top: 50%; transform: translateY(-50%); 
-            width: 34px; height: 34px; border: 2px solid #1e40af; border-radius: 6px; 
-            background: white; z-index: 50; 
-            display: flex !important; align-items: center !important; justify-content: center !important;
-            box-shadow: 2px 2px 0px rgba(30, 64, 175, 0.1);
-        }
-        .match-number-input { 
-            width: 100% !important; height: 100% !important; border: none !important; 
-            background: transparent !important; text-align: center !important; 
-            outline: none !important; font-weight: 900 !important; font-size: 15px !important; 
-            color: #1e40af !important; padding: 0 !important; margin: 0 !important;
-            display: block !important; line-height: 1 !important; /* Quan trọng để căn tâm */
-        }
-
-        .player-line { height: 48px; border-bottom: 3px solid #cbd5e1; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; background: white; position: relative; overflow: hidden; width: 100%; }
+        .match-number-box { position: absolute; left: -45px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border: 2px solid #1e40af; border-radius: 6px; background: white; z-index: 50; display: flex !important; align-items: center !important; justify-content: center !important; }
+        .match-number-input { width: 100% !important; height: 100% !important; border: none !important; background: transparent !important; text-align: center !important; outline: none !important; font-weight: 900 !important; font-size: 15px !important; color: #1e40af !important; padding: 0 !important; line-height: 1 !important; }
+        .player-line { height: 48px; border-bottom: 3px solid #cbd5e1; display: flex; flex-direction: column; justify-content: center; padding: 0 10px; background: white; position: relative; overflow: hidden; width: 100%; cursor: pointer; }
         .player-name { font-size: 0.8rem; font-weight: 900; text-transform: uppercase; white-space: nowrap; color: #1e293b; line-height: 1.2; }
         .player-club { font-size: 9px; font-weight: 700; font-style: italic; opacity: 0.8; text-transform: uppercase; color: #64748b; line-height: 1; }
-
         .blue-side { border-bottom-color: #2563eb !important; }
         .red-side { border-bottom-color: #dc2626 !important; }
         .is-winner { background: #fff1f2; }
         .is-winner::after { content: "WIN ★"; position: absolute; right: 5px; top: 2px; font-size: 8px; color: #dc2626; font-weight: 900; }
-        .round-label { font-size: 10px; text-transform: uppercase; font-weight: 900; color: #64748b; margin-top: 6px; text-align: center; background: #f8fafc; border-radius: 4px; padding: 2px 0; }
-        
-        /* MEDAL COLORS */
         .medal-tag { padding: 12px; border-radius: 12px; font-weight: 800; display: flex; flex-direction: column; border-left: 8px solid #ddd; margin-bottom: 10px; min-width: 250px; }
         .gold-bg { background: linear-gradient(to right, #fef3c7, #fde68a); border-color: #d97706; color: #92400e; }
         .silver-bg { background: linear-gradient(to right, #f1f5f9, #e2e8f0); border-color: #475569; color: #1e293b; }
         .bronze-bg { background: linear-gradient(to right, #ffedd5, #fed7aa); border-color: #c2410c; color: #7c2d12; }
-        
         .admin-only { display: none !important; }
         .admin-mode .admin-only { display: flex !important; }
         .tab-active { background-color: white !important; border-bottom: 4px solid #2563eb !important; color: #2563eb !important; }
+        select { border: 2px solid #e2e8f0 !important; border-radius: 10px !important; padding: 8px 12px !important; outline: none !important; font-weight: 600; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen" id="mainBody">
+<body id="mainBody">
 
 <div class="max-w-[1800px] mx-auto p-4">
-    <header class="bg-white p-5 rounded-2xl shadow-sm mb-6 no-print flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-slate-100">
+    <header class="bg-white p-5 rounded-2xl shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="flex items-center gap-4">
             <div>
                 <h1 class="text-2xl font-black text-slate-900 uppercase italic tracking-tighter">SEUNG RI <span class="text-blue-600">LIVE</span></h1>
@@ -65,37 +49,34 @@
         </div>
         <nav class="flex bg-slate-100 p-1.5 rounded-2xl shadow-inner">
             <button onclick="switchTab('Poomsae')" id="tabPoomsae" class="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition tracking-widest">Quyền / Poomsae</button>
-            <button onclick="switchTab('Kyorugi')" id="tabKyorugi" class="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition tracking-widest">Đối kháng / Kyorugi</button>
-            <button onclick="switchTab('Speed')" id="tabSpeed" class="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition tracking-widest">Tốc độ / Speed</button>
+            <button onclick="switchTab('Kyorugi')" id="tabKyorugi" class="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition tracking-widest ml-2">Đối kháng / Kyorugi</button>
+            <button onclick="switchTab('Speed')" id="tabSpeed" class="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase transition tracking-widest ml-2">Tốc độ / Speed</button>
         </nav>
     </header>
 
-    <div class="bg-white p-4 rounded-2xl shadow-sm mb-8 no-print flex flex-wrap items-center justify-between gap-4 border-l-8 border-blue-600">
+    <div class="bg-white p-4 rounded-2xl shadow-sm mb-8 flex flex-wrap items-center justify-between gap-4 border-l-8 border-blue-600">
         <div class="flex items-center gap-3">
-            <span class="text-[10px] font-black uppercase text-slate-400 italic">NỘI DUNG:</span>
-            <select id="catSelect" onchange="switchCat()" class="bg-slate-50 px-4 py-2 rounded-xl font-bold text-sm shadow-sm min-w-[280px] border-0 outline-none"></select>
+            <span class="text-[10px] font-black uppercase text-slate-400 italic">HẠNG CÂN:</span>
+            <select id="catSelect" onchange="switchCat()" class="bg-slate-50 min-w-[350px] shadow-sm"></select>
             <div class="admin-only flex gap-1 items-center">
-                <button onclick="renameCat()" class="bg-amber-500 text-white p-2.5 rounded-lg" title="Sửa tên">✎</button>
-                <button onclick="deleteCat()" class="bg-red-500 text-white p-2.5 rounded-lg flex items-center justify-center" title="Xóa nội dung">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                </button>
-                <button onclick="addCat()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-black text-xs shadow-md uppercase">+ ADD</button>
+                <button onclick="deleteCat()" class="bg-red-500 text-white p-2.5 rounded-lg" title="Xóa nội dung">✕</button>
+                <button onclick="openAddModal()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-black text-xs uppercase">+ THÊM HẠNG CÂN</button>
             </div>
         </div>
         <div class="flex gap-2">
-            <button id="exportBtn" onclick="exportPNG()" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-xl hover:bg-black transition">EXPORT PNG</button>
+            <button id="exportBtn" onclick="exportPNG()" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-xl">EXPORT PNG</button>
             <button onclick="window.print()" class="bg-white border-2 border-slate-100 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase shadow">PRINT</button>
         </div>
     </div>
 
     <div class="grid lg:grid-cols-4 gap-8">
-        <aside class="lg:col-span-1 space-y-4 no-print">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
-                <h3 class="text-[10px] font-black text-slate-500 uppercase mb-4 tracking-widest border-b pb-2 italic">DANH SÁCH VĐV</h3>
+        <aside class="lg:col-span-1 space-y-4">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase mb-4 tracking-widest border-b pb-2 italic text-center">DANH SÁCH VĐV</h3>
                 <textarea id="bulkInput" class="w-full h-96 p-3 border-2 border-slate-50 rounded-xl text-xs outline-none bg-slate-50 mb-4 font-bold leading-relaxed" placeholder="Tên - Đơn vị"></textarea>
                 <div class="admin-only flex flex-col gap-2">
                     <button onclick="importPlayers()" class="bg-slate-800 text-white w-full py-3 rounded-xl font-bold text-xs uppercase">SAVE LIST</button>
-                    <button onclick="generateGroups()" id="genBtn" class="bg-red-600 text-white w-full py-4 rounded-xl font-black text-xs uppercase shadow-lg italic">BỐC THĂM / DRAW</button>
+                    <button onclick="generateGroups()" class="bg-red-600 text-white w-full py-4 rounded-xl font-black text-xs uppercase shadow-lg italic">BỐC THĂM / DRAW</button>
                 </div>
             </div>
         </aside>
@@ -108,36 +89,72 @@
     </div>
 </div>
 
+<div id="addModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-[2rem] shadow-2xl max-w-lg w-full">
+        <h2 class="text-xl font-black uppercase italic mb-6 text-slate-800">Tạo hạng cân thi đấu</h2>
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Nội dung chính:</label>
+                <select id="modalMain" class="w-full mt-1" onchange="updateModalOptions()">
+                    <option value="Quyền Cá Nhân Nam">Quyền Cá Nhân Nam</option>
+                    <option value="Quyền Cá Nhân Nữ">Quyền Cá Nhân Nữ</option>
+                    <option value="Quyền Đôi Nam Nữ">Quyền Đôi Nam Nữ</option>
+                    <option value="Quyền Đồng Đội Nam">Quyền Đồng Đội Nam</option>
+                    <option value="Quyền Đồng Đội Nữ">Quyền Đồng Đội Nữ</option>
+                    <option value="Kyorugi">Đối kháng / Kyorugi</option>
+                    <option value="Speed">Tốc độ / Speed</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Nhóm tuổi:</label>
+                <select id="modalAge" class="w-full mt-1"></select>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Cấp đai:</label>
+                <select id="modalBelt" class="w-full mt-1"></select>
+            </div>
+            <div class="flex gap-2 mt-8">
+                <button onclick="submitNewCat()" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black uppercase shadow-lg">KHỞI TẠO</button>
+                <button onclick="closeAddModal()" class="flex-1 bg-slate-100 text-slate-500 py-4 rounded-2xl font-black uppercase">HỦY</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-// --- GIỮ NGUYÊN FIREBASE CONFIG ---
+// --- FIREBASE CONFIG ---
 const firebaseConfig = {
-  apiKey: "AIzaSyBhN3Riezh-Ka20Salm1COtFbW9UdCLRdM",
-  authDomain: "seungrichampionship-90984.firebaseapp.com",
-  databaseURL: "https://seungrichampionship-90984-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "seungrichampionship-90984",
-  storageBucket: "seungrichampionship-90984.firebasestorage.app",
-  messagingSenderId: "1031691130771",
-  appId: "1:1031691130771:web:1dc2ade7290b60f9d87a66",
-  measurementId: "G-QC40451RRY"
+    apiKey: "AIzaSyBhN3Riezh-Ka20Salm1COtFbW9UdCLRdM",
+    authDomain: "seungrichampionship-90984.firebaseapp.com",
+    databaseURL: "https://seungrichampionship-90984-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "seungrichampionship-90984",
+    storageBucket: "seungrichampionship-90984.firebasestorage.app",
+    messagingSenderId: "1031691130771",
+    appId: "1:1031691130771:web:1dc2ade7290b60f9d87a66"
 };
 
-const ADMIN_PASSWORD = "123"; 
-let isAdmin = false;
-let store = {};
-let currentTab = 'Poomsae';
-let current = "";
+const AGES_INDIVIDUAL = [
+    "Nhóm 1: Dưới 8 tuổi (Sinh 2018+)", "Nhóm 2: 9-10 tuổi (2017-2016)", "Nhóm 3: 11-12 tuổi (2015-2014)",
+    "Nhóm 4: 13-14 tuổi (2013-2012)", "Nhóm 5: 15-17 tuổi (2011-2010)", "Nhóm 6: 18-30 tuổi (2009-1996)",
+    "Nhóm 7: 31-40 tuổi (1995-1986)", "Nhóm 8: Trên 41 tuổi (1985-)"
+];
+const BELTS_INDIVIDUAL = ["Đai Trắng", "Đai Vàng", "Đai Xanh Lá", "Đai Xanh Dương", "Đai Đỏ", "Đai Đỏ 1-2-3", "Đỏ Đen/Đen"];
+
+const AGES_GROUP = ["Dưới 10 tuổi (2016+)", "Từ 11-14 tuổi (2012-2015)", "Từ 15-30 tuổi (1996-2011)", "Trên 31 tuổi (1995-)"];
+const BELTS_GROUP = ["Nhóm đai Trắng/Vàng/Xanh lá", "Nhóm đai Xanh dương/Đỏ", "Nhóm đai Đỏ đen/Đen"];
+
+const ADMIN_PASSWORD = "123";
+let isAdmin = false, store = {}, currentTab = 'Poomsae', current = "";
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database().ref("seungri_final_v5");
 
-db.on('value', (snapshot) => {
-    const val = snapshot.val();
-    if (val) {
-        store = val;
-        document.getElementById('status').innerText = "● ONLINE / TRỰC TUYẾN";
-        document.getElementById('status').className = "text-green-500 text-[9px] font-black uppercase mt-1 italic tracking-widest text-center";
-        initData();
-    }
+db.on('value', snap => {
+    const val = snap.val(); if (!val) return;
+    store = val;
+    document.getElementById('status').innerText = "● ONLINE / TRỰC TUYẾN";
+    document.getElementById('status').className = "text-green-500 text-[9px] font-black uppercase mt-1 italic tracking-widest text-center";
+    initData();
 });
 
 function initData() { updateSelector(); updatePlayerList(); renderGroups(); updateTabUI(); }
@@ -145,8 +162,8 @@ function sync() { if(isAdmin) db.set(store); }
 
 function switchTab(tab) {
     currentTab = tab;
-    const filteredKeys = Object.keys(store).filter(k => k.includes(currentTab));
-    current = filteredKeys[0] || "";
+    const filtered = Object.keys(store).filter(k => tab === 'Poomsae' ? k.includes('Quyền') : k.includes(tab));
+    current = filtered[0] || "";
     initData();
 }
 
@@ -158,29 +175,46 @@ function updateTabUI() {
 }
 
 function updateSelector() {
-    const sel = document.getElementById('catSelect');
-    sel.innerHTML = '';
-    const filteredKeys = Object.keys(store).filter(k => k.includes(currentTab));
-    filteredKeys.forEach(k => {
+    const sel = document.getElementById('catSelect'); sel.innerHTML = '';
+    const filtered = Object.keys(store).filter(k => currentTab === 'Poomsae' ? k.includes('Quyền') : k.includes(currentTab));
+    filtered.forEach(k => {
         let o = document.createElement('option'); o.value = k; o.innerText = k;
         if(k === current) o.selected = true;
         sel.appendChild(o);
     });
-    if (!current && filteredKeys.length > 0) current = filteredKeys[0];
+    if (!current && filtered.length > 0) current = filtered[0];
 }
 
-function addCat() {
-    let n = prompt(`Nội dung ${currentTab} mới:`, currentTab + " - ");
-    if(n) {
-        if (!n.includes(currentTab)) n = currentTab + " " + n;
-        store[n] = { players: [{name: 'VĐV Mẫu', club: 'Đơn vị'}], groups: [] }; 
-        current = n; sync(); 
+// MODAL LOGIC
+function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); updateModalOptions(); }
+function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); }
+
+function updateModalOptions() {
+    const type = document.getElementById('modalMain').value;
+    const ageSel = document.getElementById('modalAge');
+    const beltSel = document.getElementById('modalBelt');
+    
+    if(type.includes('Cá Nhân')) {
+        ageSel.innerHTML = AGES_INDIVIDUAL.map(a => `<option value="${a}">${a}</option>`).join('');
+        beltSel.innerHTML = BELTS_INDIVIDUAL.map(b => `<option value="${b}">${b}</option>`).join('');
+    } else {
+        ageSel.innerHTML = AGES_GROUP.map(a => `<option value="${a}">${a}</option>`).join('');
+        beltSel.innerHTML = BELTS_GROUP.map(b => `<option value="${b}">${b}</option>`).join('');
     }
 }
 
+function submitNewCat() {
+    const main = document.getElementById('modalMain').value;
+    const age = document.getElementById('modalAge').value;
+    const belt = document.getElementById('modalBelt').value;
+    const full = `${main} - ${age} - ${belt}`;
+    
+    store[full] = { players: [{name: 'VĐV Mẫu', club: 'Đơn vị'}], groups: [] };
+    current = full; sync(); closeAddModal();
+}
+
 function switchCat() { current = document.getElementById('catSelect').value; initData(); }
-function renameCat() { let n = prompt("Sửa tên:", current); if(n && n !== current) { store[n] = store[current]; delete store[current]; current = n; sync(); } }
-function deleteCat() { if(confirm(`Xác nhận xóa: ${current}?`)) { delete store[current]; current = ""; sync(); } }
+function deleteCat() { if(confirm(`Xóa hạng cân: ${current}?`)) { delete store[current]; current = ""; sync(); } }
 
 function importPlayers() {
     if(!current) return;
@@ -189,7 +223,7 @@ function importPlayers() {
         let parts = l.split('-');
         return { name: parts[0]?.trim() || 'VĐV', club: parts[1]?.trim() || 'ĐƠN VỊ' };
     });
-    sync(); alert("ĐÃ LƯU!");
+    sync(); alert("ĐÃ LƯU DANH SÁCH!");
 }
 
 function updatePlayerList() {
@@ -204,8 +238,11 @@ function generateGroups() {
     if(!current || store[current].players.length < 1) return alert("Danh sách trống!");
     let p = [...store[current].players].sort(() => Math.random() - 0.5);
     let groups = [];
-    let isSpeed = current.includes("Speed"), isKyorugi = current.includes("Kyorugi");
-    let groupSize = (isSpeed || current.includes("Poomsae")) ? 4 : p.length;
+    let isSpeed = current.includes("Speed");
+    let isKnockoutTab = current.includes("Kyorugi") || current.includes("Quyền");
+    
+    // Nếu là Quyền hoặc Speed -> Chia nhóm 4
+    let groupSize = (isSpeed || current.includes("Quyền")) ? 4 : p.length;
 
     for (let i = 0; i < p.length; i += groupSize) {
         let chunk = p.slice(i, i + groupSize);
@@ -216,11 +253,13 @@ function generateGroups() {
             if (size < 2) size = 2;
             let bracket = [];
             let pArr = Array(size).fill(null).map(() => ({ name: 'BYE', club: '-', winner: null }));
+            
             chunk.forEach((pl, idx) => {
                 let pos = 0, tempIdx = idx;
                 for(let j=0; j<Math.log2(size); j++) { pos = (pos << 1) | (tempIdx & 1); tempIdx >>= 1; }
                 pArr[pos] = { name: pl.name, club: pl.club, winner: null };
             });
+
             let r1 = [];
             for(let j=0; j<pArr.length; j+=2) {
                 let m = { p1: pArr[j], p2: pArr[j+1], winner: null, matchNo: '' };
@@ -234,54 +273,56 @@ function generateGroups() {
                 let nextR = [];
                 for(let k=0; k<matchCount; k++) {
                     let m = { p1: {name:'?'}, p2: {name:'?'}, winner: null, matchNo: '' };
-                    let prevM1 = bracket[currentRi][k*2], prevM2 = bracket[currentRi][k*2 + 1];
-                    if(prevM1.winner) m.p1 = prevM1.winner; if(prevM2.winner) m.p2 = prevM2.winner;
+                    let pm1 = bracket[currentRi][k*2], pm2 = bracket[currentRi][k*2 + 1];
+                    if(pm1.winner) m.p1 = pm1.winner; if(pm2.winner) m.p2 = pm2.winner;
                     if(m.p1.name === 'BYE' && m.p2.name !== '?') m.winner = m.p2;
                     if(m.p2.name === 'BYE' && m.p1.name !== '?') m.winner = m.p1;
                     nextR.push(m);
                 }
                 bracket.push(nextR); matchCount /= 2; currentRi++;
             }
-            groups.push({ name: isKyorugi ? `SƠ ĐỒ THI ĐẤU` : `NHÓM ${groups.length + 1}`, type: 'bracket', rounds: bracket });
+            groups.push({ name: current.includes("Kyorugi") ? `SƠ ĐỒ THI ĐẤU` : `NHÓM ${groups.length + 1}`, type: 'bracket', rounds: bracket });
         }
     }
     store[current].groups = groups; sync();
 }
 
 function renderGroups() {
-    const area = document.getElementById('displayArea');
-    area.innerHTML = '';
+    const area = document.getElementById('displayArea'); area.innerHTML = '';
     if (!store[current]?.groups) return;
     store[current].groups.forEach((g, gi) => {
-        let container = document.createElement('div');
-        container.className = 'group-container shadow-md';
+        let container = document.createElement('div'); container.className = 'group-container';
         let title = `<h3 class="font-black text-slate-900 mb-8 uppercase italic border-b-4 border-blue-600 inline-block pb-1 text-xl tracking-tight">${g.name} - ${current}</h3>`;
+        
         if (g.type === 'speed') {
             let sorted = [...g.players].sort((a,b) => (b.score || 0) - (a.score || 0));
-            let gold = sorted[0]?.score > 0 ? sorted[0] : null, silver = (sorted[1]?.score > 0) ? sorted[1] : null, b1 = (sorted[2]?.score > 0) ? sorted[2] : null, b2 = (sorted[3]?.score > 0) ? sorted[3] : null;
-            let rows = g.players.map((p, pi) => `<div class="speed-row border-b py-3 flex items-center gap-4"><div class="flex-1 uppercase font-black"><div class="player-name">${p.name}</div><div class="player-club">${p.club}</div></div><input type="number" class="w-20 text-center border-4 border-blue-600 rounded-lg font-black p-1" value="${p.score || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updateSpeedScore(${gi}, ${pi}, this.value)"></div>`).join('');
+            let gold = sorted[0]?.score > 0 ? sorted[0] : null, silver = sorted[1]?.score > 0 ? sorted[1] : null, b1 = sorted[2]?.score > 0 ? sorted[2] : null, b2 = sorted[3]?.score > 0 ? sorted[3] : null;
+            let rows = g.players.map((p, pi) => `
+                <div class="speed-row border-b py-3 flex items-center gap-4">
+                    <div class="flex-1"><div class="player-name">${p.name}</div><div class="player-club">${p.club}</div></div>
+                    <input type="number" class="w-20 text-center border-4 border-blue-600 rounded-lg font-black p-1" value="${p.score || 0}" ${!isAdmin?'disabled':''} onchange="updateSpeedScore(${gi},${pi},this.value)">
+                </div>`).join('');
             container.innerHTML = title + `<div class="flex flex-col md:flex-row gap-12"><div class="flex-1 bg-slate-50 p-6 rounded-2xl">${rows}</div><div class="medal-side">${renderMedalTag('🥇 VÀNG', gold)}${renderMedalTag('🥈 BẠC', silver)}${renderMedalTag('🥉 ĐỒNG', b1)}${renderMedalTag('🥉 ĐỒNG', b2)}</div></div>`;
         } else {
-            let bracketWrap = document.createElement('div'); bracketWrap.className = 'bracket-scroll';
+            let bWrap = document.createElement('div'); bWrap.className = 'bracket-scroll';
             g.rounds.forEach((round, ri) => {
                 let col = document.createElement('div'); col.className = 'round-column';
-                let label = ri === g.rounds.length - 1 ? 'Final' : (ri === g.rounds.length - 2 ? 'Semifinal' : 'Round ' + (ri+1));
-                round.forEach((m, mi) => { 
+                let label = ri === g.rounds.length - 1 ? 'Final' : (ri === g.rounds.length - 2 ? 'Semifinal' : 'Vòng loại');
+                round.forEach((m, mi) => {
                     col.innerHTML += `<div class="match-box">
-                        <div class="match-number-box">
-                            <input type="text" class="match-number-input" placeholder="#" value="${m.matchNo || ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateMatchNo(${gi}, ${ri}, ${mi}, this.value)">
-                        </div>
+                        <div class="match-number-box"><input type="text" class="match-number-input" value="${m.matchNo || ''}" ${!isAdmin?'disabled':''} onchange="updateMatchNo(${gi},${ri},${mi},this.value)"></div>
                         ${renderSlot(gi,ri,mi,1,m.p1,m.winner)}
-                        ${m.p2 ? renderSlot(gi,ri,mi,2,m.p2,m.winner) : ''}
-                        <div class="round-label">${label}</div>
-                    </div>`; 
+                        ${renderSlot(gi,ri,mi,2,m.p2,m.winner)}
+                        <div class="text-[9px] font-black uppercase text-slate-400 mt-2 text-center tracking-tighter">${label}</div>
+                    </div>`;
                 });
-                bracketWrap.appendChild(col);
+                bWrap.appendChild(col);
             });
-            let lastR = g.rounds[g.rounds.length - 1], gold = lastR[0].winner, silver = gold ? (gold.name === lastR[0].p1.name ? lastR[0].p2 : lastR[0].p1) : null;
+            // Medal Logic
+            let lastR = g.rounds[g.rounds.length - 1][0], gold = lastR.winner, silver = gold ? (gold.name === lastR.p1.name ? lastR.p2 : lastR.p1) : null;
             let semiR = g.rounds.length >= 2 ? g.rounds[g.rounds.length - 2] : null, b1 = semiR && semiR[0]?.winner ? (semiR[0].winner.name === semiR[0].p1.name ? semiR[0].p2 : semiR[0].p1) : null, b2 = semiR && semiR[1]?.winner ? (semiR[1].winner.name === semiR[1].p1.name ? semiR[1].p2 : semiR[1].p1) : null;
-            bracketWrap.innerHTML += `<div class="medal-side">${renderMedalTag('🥇 VÀNG', gold)}${renderMedalTag('🥈 BẠC', (silver && silver.name!=='?')?silver:null)}${renderMedalTag('🥉 ĐỒNG', (b1 && b1.name!=='BYE')?b1:null)}${renderMedalTag('🥉 ĐỒNG', (b2 && b2.name!=='BYE')?b2:null)}</div>`;
-            container.appendChild(bracketWrap);
+            bWrap.innerHTML += `<div class="medal-side">${renderMedalTag('🥇 VÀNG', gold)}${renderMedalTag('🥈 BẠC', (silver && silver.name!=='?')?silver:null)}${renderMedalTag('🥉 ĐỒNG', (b1 && b1.name!=='BYE' && b1.name!=='?')?b1:null)}${renderMedalTag('🥉 ĐỒNG', (b2 && b2.name!=='BYE' && b2.name!=='?')?b2:null)}</div>`;
+            container.appendChild(bWrap);
         }
         area.appendChild(container);
     });
@@ -292,75 +333,51 @@ function renderMedalTag(rank, p) {
     return `<div class="medal-tag ${bg}"><span class="text-[9px] uppercase font-black opacity-60 italic">${rank}</span><span class="text-sm font-black uppercase">${p ? p.name : '...'}</span><span class="text-[10px] font-bold italic tracking-tight">${p ? p.club : ''}</span></div>`;
 }
 
-function updateMatchNo(gi, ri, mi, val) { if(!isAdmin) return; store[current].groups[gi].rounds[ri][mi].matchNo = val; sync(); }
-function renderSlot(gi, ri, mi, pNum, pObj, winner) {
-    if(!pObj) return '';
-    let isWin = winner && winner.name === pObj.name && pObj.name !== 'BYE';
-    let colorClass = pNum === 1 ? 'blue-side' : 'red-side';
-    return `<div class="player-line ${colorClass} ${isWin?'is-winner':''} ${pObj.name==='BYE'?'opacity-20':''}" onclick="setWinner(${gi},${ri},${mi},${pNum})">
-        <div class="player-name">${pObj.name}</div>
-        <div class="player-club">${pObj.club}</div>
-    </div>`;
+function renderSlot(gi, ri, mi, pNum, p, winner) {
+    if(!p) return '';
+    let isWin = winner && winner.name === p.name && p.name !== 'BYE';
+    let side = pNum === 1 ? 'blue-side' : 'red-side';
+    return `<div class="player-line ${side} ${isWin?'is-winner':''} ${p.name==='BYE'?'opacity-20':''}" onclick="setWinner(${gi},${ri},${mi},${pNum})">
+        <div class="player-name">${p.name}</div><div class="player-club">${p.club}</div></div>`;
 }
 
 function setWinner(gi, ri, mi, pNum) {
     if(!isAdmin) return;
     let g = store[current].groups[gi], m = g.rounds[ri][mi];
     if (m.p1.name === 'BYE' || (m.p2 && m.p2.name === 'BYE')) return;
-    let winObj = (pNum === 1) ? m.p1 : m.p2;
-    if (winObj.name === '?' || winObj.name === 'BYE') return;
-    m.winner = winObj;
-    if (g.rounds[ri+1]) { let nextMi = Math.floor(mi / 2); if (mi % 2 === 0) g.rounds[ri+1][nextMi].p1 = winObj; else g.rounds[ri+1][nextMi].p2 = winObj; checkAutoBye(g, ri+1, nextMi); }
+    let win = pNum === 1 ? m.p1 : m.p2; if (win.name === '?' || win.name === 'BYE') return;
+    m.winner = win;
+    if (g.rounds[ri+1]) { let nMi = Math.floor(mi / 2); if (mi % 2 === 0) g.rounds[ri+1][nMi].p1 = win; else g.rounds[ri+1][nMi].p2 = win; checkAutoBye(g, ri+1, nMi); }
     sync();
 }
 
-function checkAutoBye(group, ri, mi) {
-    let m = group.rounds[ri][mi]; if(!m) return;
-    if(m.p1.name !== '?' && m.p1.name !== 'BYE' && m.p2.name === 'BYE') { m.winner = m.p1; if(group.rounds[ri+1]) { let nextMi = Math.floor(mi / 2); if(mi % 2 === 0) group.rounds[ri+1][nextMi].p1 = m.p1; else group.rounds[ri+1][nextMi].p2 = m.p1; checkAutoBye(group, ri+1, nextMi); } }
-    else if(m.p2.name !== '?' && m.p2.name !== 'BYE' && m.p1.name === 'BYE') { m.winner = m.p2; if(group.rounds[ri+1]) { let nextMi = Math.floor(mi / 2); if(mi % 2 === 0) group.rounds[ri+1][nextMi].p1 = m.p2; else group.rounds[ri+1][nextMi].p2 = m.p2; checkAutoBye(group, ri+1, nextMi); } }
+function checkAutoBye(g, ri, mi) {
+    let m = g.rounds[ri][mi]; if(!m) return;
+    if(m.p1.name !== '?' && m.p1.name !== 'BYE' && m.p2.name === 'BYE') { m.winner = m.p1; if(g.rounds[ri+1]) { let nMi = Math.floor(mi/2); if(mi%2===0) g.rounds[ri+1][nMi].p1 = m.p1; else g.rounds[ri+1][nMi].p2 = m.p1; checkAutoBye(g, ri+1, nMi); } }
+    else if(m.p2.name !== '?' && m.p2.name !== 'BYE' && m.p1.name === 'BYE') { m.winner = m.p2; if(g.rounds[ri+1]) { let nMi = Math.floor(mi/2); if(mi%2===0) g.rounds[ri+1][nMi].p1 = m.p2; else g.rounds[ri+1][nMi].p2 = m.p2; checkAutoBye(g, ri+1, nMi); } }
 }
 
 function updateSpeedScore(gi, pi, val) { if(!isAdmin) return; store[current].groups[gi].players[pi].score = parseInt(val) || 0; sync(); }
+function updateMatchNo(gi, ri, mi, val) { if(!isAdmin) return; store[current].groups[gi].rounds[ri][mi].matchNo = val; sync(); }
 
 function toggleLogin() {
     if(!isAdmin) {
         let p = prompt("Password:");
-        if(p === ADMIN_PASSWORD) {
-            isAdmin = true;
-            document.getElementById('mainBody').classList.add('admin-mode');
-            document.getElementById('loginBtn').innerText = "ADMIN ON";
-            document.getElementById('loginBtn').className = "bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase shadow-md";
-        } else alert("Sai mật khẩu!");
-    } else {
-        isAdmin = false;
-        document.getElementById('mainBody').classList.remove('admin-mode');
-        document.getElementById('loginBtn').innerText = "Admin Login";
-        document.getElementById('loginBtn').className = "bg-slate-100 text-slate-600 px-5 py-2.5 rounded-xl font-bold text-xs uppercase shadow-sm";
-    }
+        if(p === ADMIN_PASSWORD) { isAdmin = true; document.getElementById('mainBody').classList.add('admin-mode'); document.getElementById('loginBtn').innerText = "ADMIN ON"; }
+        else alert("Sai mật khẩu!");
+    } else { isAdmin = false; document.getElementById('mainBody').classList.remove('admin-mode'); document.getElementById('loginBtn').innerText = "Admin Login"; }
     initData();
 }
 
 async function exportPNG() {
-    const area = document.getElementById('captureArea');
-    const btn = document.getElementById('exportBtn');
-    btn.innerText = "DỰNG ẢNH (Wait 2s)..."; btn.disabled = true;
+    const area = document.getElementById('captureArea'); const btn = document.getElementById('exportBtn');
+    btn.innerText = "Wait..."; btn.disabled = true;
     try {
-        const originalWidth = area.style.width;
-        area.style.width = area.scrollWidth + "px";
-        await new Promise(r => setTimeout(r, 1000));
-        const canvas = await html2canvas(area, {
-            scale: 2, useCORS: true, backgroundColor: "#ffffff",
-            width: area.scrollWidth, height: area.scrollHeight,
-            windowWidth: area.scrollWidth, windowHeight: area.scrollHeight,
-            x: 0, y: 0, scrollX: 0, scrollY: 0
-        });
-        area.style.width = originalWidth;
-        const link = document.createElement('a');
-        link.download = `RESULT_${current}.png`;
-        link.href = canvas.toDataURL("image/png", 1.0);
-        link.click();
-    } catch (e) { alert("Lỗi Export. Vui lòng dùng Chrome trên máy tính."); }
-    finally { btn.innerText = "XUẤT ẢNH PNG"; btn.disabled = false; }
+        const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+        const link = document.createElement('a'); link.download = `RESULT_${current}.png`;
+        link.href = canvas.toDataURL("image/png"); link.click();
+    } catch (e) { alert("Lỗi Export."); }
+    finally { btn.innerText = "EXPORT PNG"; btn.disabled = false; }
 }
 </script>
 </body>
