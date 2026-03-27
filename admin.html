@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI LIVE - ELITE ENGINE V8</title>
+    <title>SEUNG RI LIVE - ELITE ENGINE V9</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -24,7 +24,7 @@
         .red-side { border-bottom: 3px solid #ef4444 !important; }
         .is-winner { background: #f0f7ff; }
         .is-winner::after { content: "★ WIN"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #3b82f6; font-size: 10px; font-weight: 900; }
-        .medal-card { padding: 10px 16px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; margin-bottom: 8px; }
+        .medal-card { padding: 12px 16px; border-radius: 16px; font-weight: 700; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; margin-bottom: 8px; }
         .gold-card { background: #fffbeb; border-color: #fde68a; color: #92400e; }
         .silver-card { background: #f8fafc; border-color: #e2e8f0; color: #334155; }
         .bronze-card { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
@@ -37,8 +37,8 @@
 
 <div id="authOverlay" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[999] flex items-center justify-center p-4">
     <div class="bg-white p-10 rounded-[3rem] shadow-2xl max-w-md w-full text-center">
-        <h2 class="text-3xl font-[900] text-slate-900 uppercase italic mb-2">SEUNG RI <span class="text-blue-600">LIVE</span></h2>
-        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-10">Hệ thống quản lý 2026</p>
+        <h2 class="text-3xl font-[900] text-slate-900 uppercase italic mb-2 tracking-tighter">SEUNG RI <span class="text-blue-600">LIVE</span></h2>
+        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-10">Tournament Portal 2026</p>
         <div class="space-y-4 text-left">
             <input type="email" id="authEmail" placeholder="Email (HLV hoặc Admin)">
             <input type="password" id="authPass" placeholder="Mật khẩu">
@@ -50,8 +50,8 @@
 <div id="mainUI" class="hidden max-w-[1900px] mx-auto p-4 md:p-8">
     <header class="bg-white p-6 rounded-[2.5rem] shadow-sm mb-8 flex flex-col xl:flex-row justify-between items-center gap-6 border-b-4 border-blue-600">
         <div class="flex items-center gap-8">
-            <h1 class="text-2xl font-black text-slate-900 uppercase italic">SEUNG RI <span class="text-blue-600">PRO</span></h1>
-            <nav class="flex bg-slate-50 p-1.5 rounded-2xl" id="mainNav">
+            <h1 class="text-2xl font-black text-slate-900 uppercase italic tracking-tighter">SEUNG RI <span class="text-blue-600">PRO</span></h1>
+            <nav class="flex bg-slate-50 p-1.5 rounded-2xl">
                 <button onclick="switchTab('Poomsae')" id="tabPoomsae" class="tab-btn active">Quyền</button>
                 <button onclick="switchTab('Kyorugi')" id="tabKyorugi" class="tab-btn">Đối kháng</button>
                 <button onclick="switchTab('Speed')" id="tabSpeed" class="tab-btn">Tốc độ</button>
@@ -60,7 +60,7 @@
         </div>
         <div class="flex items-center gap-5">
             <div class="text-right border-r pr-5">
-                <div id="userName" class="text-[11px] font-black uppercase text-slate-900 leading-none">---</div>
+                <div id="userName" class="text-[11px] font-black uppercase text-slate-900 leading-none tracking-tighter">---</div>
                 <div id="userRole" class="text-[9px] font-bold text-blue-500 uppercase mt-1 italic tracking-widest">---</div>
             </div>
             <button onclick="location.reload()" class="text-red-400 hover:text-red-600 font-bold text-[10px] uppercase">Thoát</button>
@@ -68,22 +68,27 @@
     </header>
 
     <div class="grid lg:grid-cols-4 gap-10">
-        <aside class="lg:col-span-1 space-y-6" id="coachSidebar">
-            <div class="glass-card p-6 border-t-8 border-blue-600">
+        <aside class="lg:col-span-1 space-y-6">
+            <div id="regFormContainer" class="glass-card p-6 border-t-8 border-blue-600">
                 <h3 class="text-[11px] font-black text-slate-900 uppercase mb-5 tracking-widest italic border-b pb-3">Đăng ký mới</h3>
                 <div class="space-y-4">
-                    <input type="text" id="regName" placeholder="Tên vận động viên" class="uppercase !bg-slate-50">
+                    <input type="text" id="regName" placeholder="Tên VĐV" class="uppercase !bg-slate-50">
                     <input type="text" id="regBirth" placeholder="Năm sinh (VD: 2015)" class="!bg-slate-50">
                     <select id="regMain" onchange="updateRegOptions()"></select>
                     <select id="regAge" onchange="updateRegOptions()"></select>
                     <select id="regSub"></select>
-                    <button onclick="submitRegistration()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black text-[11px] uppercase shadow-lg hover:bg-blue-700">Xác nhận đăng ký</button>
+                    <button onclick="submitRegistration()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black text-[11px] uppercase shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">Gửi đăng ký</button>
                 </div>
             </div>
-            <div id="adminPanel" class="hidden glass-card p-6 border-2 border-red-100 space-y-3">
-                <h4 class="text-[10px] font-black text-red-500 uppercase text-center mb-2 italic">BTC Control</h4>
-                <button onclick="generateGroups()" class="bg-red-500 text-white w-full py-4 rounded-xl font-black text-[11px] uppercase shadow-lg">Bốc thăm / Draw</button>
-                <button onclick="resetData()" class="text-red-400 w-full py-2 text-[9px] font-black uppercase hover:underline text-center block">Xóa kết quả</button>
+
+            <div class="glass-card p-6 bg-slate-50/50 border-t-8 border-slate-900">
+                <h3 class="text-[10px] font-black text-slate-900 uppercase mb-4 tracking-widest text-center">VĐV trong hạng cân này</h3>
+                <div id="playerListView" class="space-y-2 max-h-[400px] overflow-y-auto pr-2"></div>
+                
+                <div id="adminPanel" class="hidden mt-6 pt-6 border-t-2 border-red-100 space-y-3">
+                    <button onclick="generateGroups()" class="bg-red-500 text-white w-full py-4 rounded-xl font-black text-[11px] uppercase shadow-lg italic">Bốc thăm / DRAW</button>
+                    <button onclick="resetData()" class="text-red-400 w-full py-2 text-[9px] font-black uppercase hover:underline text-center block">Xóa kết quả bốc thăm</button>
+                </div>
             </div>
         </aside>
 
@@ -91,7 +96,7 @@
             <div id="bracketView">
                 <div class="bg-white p-5 rounded-[2rem] shadow-sm mb-8 flex flex-wrap items-center gap-6 border-l-[6px] border-slate-900">
                     <div class="flex-1 min-w-[300px]">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block italic">Đang xem sơ đồ:</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block italic">Hạng cân đang chọn:</span>
                         <select id="catSelect" onchange="switchCat()" class="!border-none !bg-slate-50 !text-sm !font-black"></select>
                     </div>
                     <div class="w-32">
@@ -121,6 +126,7 @@
 </div>
 
 <script>
+// --- CONFIG ---
 const DATA_TREE = {
     Poomsae: {
         mains: ["Quyền Cá Nhân Nam", "Quyền Cá Nhân Nữ", "Quyền Đôi Nam Nữ", "Quyền Đồng Đội Nam", "Quyền Đồng Đội Nữ"],
@@ -140,8 +146,7 @@ const DATA_TREE = {
     },
     Speed: { 
         mains: ["Đá tống trước Nam", "Đá tống trước Nữ", "Đá Vòng Cầu Nam", "Đá Vòng Cầu Nữ", "Đấm Nam", "Đấm Nữ"], 
-        ages: ["Dưới 4 tuổi", "5 - 6 tuổi", "7 - 8 tuổi", "9 - 10 tuổi", "11 - 12 tuổi", "13 - 14 tuổi", "15 - 17 tuổi", "Trên 18 tuổi"],
-        weights: {"default": ["Mặc định"]}
+        ages: ["Dưới 4 tuổi", "5 - 6 tuổi", "7 - 8 tuổi", "9 - 10 tuổi", "11 - 12 tuổi", "13 - 14 tuổi", "15 - 17 tuổi", "Trên 18 tuổi"]
     }
 };
 
@@ -159,7 +164,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database().ref("seungri_final_v6");
 let store = {}, currentTab = 'Poomsae', current = "", userData = null;
 
-// --- AUTH ---
+// --- LOGIN ---
 async function handleLogin() {
     const email = document.getElementById('authEmail').value.trim().toLowerCase();
     const pass = document.getElementById('authPass').value.trim();
@@ -180,49 +185,41 @@ async function handleLogin() {
             userData = { role: 'coach', email: email, club: club };
         }
     }
-    startApp();
-}
-
-function startApp() {
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('mainUI').classList.remove('hidden');
     document.getElementById('userName').innerText = userData.email;
     document.getElementById('userRole').innerText = userData.club;
-    
-    // Admin thì ẩn sidebar đăng ký
+
     if(userData.role === 'admin') {
-        document.getElementById('coachSidebar').style.display = 'none';
+        document.getElementById('regFormContainer').style.display = 'none';
         document.getElementById('adminPanel').classList.remove('hidden');
         document.getElementById('tabCoach').style.display = 'none';
     }
-    
     updateRegOptions();
     db.on('value', snap => { store = snap.val() || {}; initData(); });
 }
 
 // --- LOGIC ĐĂNG KÝ VĐV ---
 function updateRegOptions() {
-    const mainSel = document.getElementById('regMain');
-    const ageSel = document.getElementById('regAge');
-    const subSel = document.getElementById('regSub');
-
-    if(mainSel.options.length === 0) {
+    const mSel = document.getElementById('regMain');
+    const aSel = document.getElementById('regAge');
+    const sSel = document.getElementById('regSub');
+    if(mSel.options.length === 0) {
         let all = [...DATA_TREE.Poomsae.mains, ...DATA_TREE.Kyorugi.mains, ...DATA_TREE.Speed.mains];
-        mainSel.innerHTML = all.map(m => `<option value="${m}">${m}</option>`).join('');
+        mSel.innerHTML = all.map(m => `<option value="${m}">${m}</option>`).join('');
     }
-
-    const m = mainSel.value;
+    const m = mSel.value;
     if(m.includes('Quyền')) {
         let ages = m.includes('Cá Nhân') ? DATA_TREE.Poomsae.ages_ind : DATA_TREE.Poomsae.ages_grp;
-        ageSel.innerHTML = ages.map(a => `<option value="${a}">${a}</option>`).join('');
+        aSel.innerHTML = ages.map(a => `<option value="${a}">${a}</option>`).join('');
         let belts = m.includes('Cá Nhân') ? DATA_TREE.Poomsae.belts_ind : DATA_TREE.Poomsae.belts_grp;
-        subSel.innerHTML = belts.map(b => `<option value="${b}">${b}</option>`).join('');
+        sSel.innerHTML = belts.map(b => `<option value="${b}">${b}</option>`).join('');
     } else if(m.includes('Đối kháng')) {
-        ageSel.innerHTML = DATA_TREE.Kyorugi.ages.map(a => `<option value="${a}">${a}</option>`).join('');
-        subSel.innerHTML = DATA_TREE.Kyorugi.weights[ageSel.value].map(w => `<option value="${w}">${w}</option>`).join('');
+        aSel.innerHTML = DATA_TREE.Kyorugi.ages.map(a => `<option value="${a}">${a}</option>`).join('');
+        sSel.innerHTML = DATA_TREE.Kyorugi.weights[aSel.value].map(w => `<option value="${w}">${w}</option>`).join('');
     } else {
-        ageSel.innerHTML = DATA_TREE.Speed.ages.map(a => `<option value="${a}">${a}</option>`).join('');
-        subSel.innerHTML = '<option value="Mặc định">Mặc định</option>';
+        aSel.innerHTML = DATA_TREE.Speed.ages.map(a => `<option value="${a}">${a}</option>`).join('');
+        sSel.innerHTML = '<option value="Mặc định">Mặc định</option>';
     }
 }
 
@@ -230,60 +227,42 @@ function submitRegistration() {
     const name = document.getElementById('regName').value.trim().toUpperCase();
     const birth = document.getElementById('regBirth').value.trim();
     if(!name || !birth) return alert("Thiếu Tên hoặc Năm sinh!");
-
-    const m = document.getElementById('regMain').value;
-    const a = document.getElementById('regAge').value;
-    const s = document.getElementById('regSub').value;
-    const catKey = m.includes('Speed') ? `${m} - ${a}` : `${m} - ${a} - ${s}`;
-
+    const catKey = document.getElementById('regMain').value.includes('Speed') ? `${document.getElementById('regMain').value} - ${document.getElementById('regAge').value}` : `${document.getElementById('regMain').value} - ${document.getElementById('regAge').value} - ${document.getElementById('regSub').value}`;
     if(!store[catKey]) store[catKey] = { players: [], groups: [] };
-    store[catKey].players.push({ name, birth, club: userData.club, ownerEmail: userData.email, cat: catKey });
+    store[catKey].players.push({ name, birth, club: userData.club, ownerEmail: userData.email });
     db.child(catKey).update({ players: store[catKey].players });
-    
-    alert("Đăng ký thành công!");
-    document.getElementById('regName').value = "";
-    document.getElementById('regBirth').value = "";
-    current = catKey; initData();
+    document.getElementById('regName').value = ""; document.getElementById('regBirth').value = "";
+    current = catKey; initData(); alert("Đăng ký thành công!");
 }
 
-// --- QUẢN LÝ DANH SÁCH CHO HLV ---
-function showCoachList() {
-    document.getElementById('bracketView').classList.add('hidden');
-    document.getElementById('coachListView').classList.remove('hidden');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tabCoach').classList.add('active');
-
-    const body = document.getElementById('coachTableBody');
-    body.innerHTML = "";
-    
-    Object.keys(store).forEach(catKey => {
-        const players = store[catKey].players || [];
-        players.forEach((p, idx) => {
-            if(p.ownerEmail === userData.email) {
-                body.innerHTML += `
-                <tr class="border-b border-slate-50 hover:bg-slate-50 transition-all">
-                    <td class="p-4 font-black uppercase text-sm">${p.name}</td>
-                    <td class="p-4 text-slate-500 font-bold">${p.birth || '---'}</td>
-                    <td class="p-4 text-xs font-bold text-blue-600">${catKey}</td>
-                    <td class="p-4 flex gap-2">
-                        <button onclick="editPlayer('${catKey}', ${idx})" class="text-blue-500 font-black text-[10px] uppercase border px-3 py-1 rounded-lg">Sửa</button>
-                        <button onclick="removePlayer('${catKey}', ${idx})" class="text-red-500 font-black text-[10px] uppercase border px-3 py-1 rounded-lg">Xóa</button>
-                    </td>
-                </tr>`;
-            }
-        });
+// --- QUẢN LÝ DANH SÁCH (CHO CẢ ADMIN & HLV) ---
+function renderPlayerList() {
+    const listDiv = document.getElementById('playerListView'); listDiv.innerHTML = "";
+    const players = store[current]?.players || [];
+    players.forEach((p, idx) => {
+        const canDelete = userData.role === 'admin' || p.ownerEmail === userData.email;
+        listDiv.innerHTML += `
+            <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                <div>
+                    <div class="text-[11px] font-black uppercase">${p.name}</div>
+                    <div class="text-[9px] font-bold text-blue-500 uppercase italic">${p.club} | ${p.birth || ''}</div>
+                </div>
+                ${canDelete ? `<div class="flex gap-1">
+                    <button onclick="editPlayerInList('${current}', ${idx})" class="text-blue-400 hover:text-blue-600 font-bold p-2 text-xs">✎</button>
+                    <button onclick="removePlayerInList('${current}', ${idx})" class="text-red-300 hover:text-red-600 font-bold p-2 text-xs">✕</button>
+                </div>` : ''}
+            </div>`;
     });
 }
 
-function removePlayer(cat, idx) {
+function removePlayerInList(cat, idx) {
     if(confirm("Xóa VĐV này?")) {
         store[cat].players.splice(idx, 1);
         db.child(cat).update({ players: store[cat].players });
-        showCoachList();
     }
 }
 
-function editPlayer(cat, idx) {
+function editPlayerInList(cat, idx) {
     const p = store[cat].players[idx];
     const newName = prompt("Sửa tên VĐV:", p.name);
     const newBirth = prompt("Sửa năm sinh:", p.birth);
@@ -291,8 +270,27 @@ function editPlayer(cat, idx) {
         store[cat].players[idx].name = newName.toUpperCase();
         store[cat].players[idx].birth = newBirth;
         db.child(cat).update({ players: store[cat].players });
-        showCoachList();
     }
+}
+
+function showCoachList() {
+    document.getElementById('bracketView').classList.add('hidden');
+    document.getElementById('coachListView').classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tabCoach').classList.add('active');
+    const body = document.getElementById('coachTableBody'); body.innerHTML = "";
+    Object.keys(store).forEach(catKey => {
+        (store[catKey].players || []).forEach((p, idx) => {
+            if(p.ownerEmail === userData.email) {
+                body.innerHTML += `<tr class="border-b border-slate-50">
+                    <td class="p-4 font-black uppercase text-sm">${p.name}</td>
+                    <td class="p-4 font-bold">${p.birth || ''}</td>
+                    <td class="p-4 text-xs text-blue-600 font-bold">${catKey}</td>
+                    <td class="p-4"><button onclick="removePlayerInList('${catKey}', ${idx})" class="text-red-500 border px-3 py-1 rounded-lg text-xs font-black">XÓA</button></td>
+                </tr>`;
+            }
+        });
+    });
 }
 
 // --- RENDER SƠ ĐỒ ---
@@ -303,27 +301,16 @@ function initData() {
     sel.innerHTML = list.map(item => `<option value="${item}">${item}</option>`).join('');
     if(!current) current = (oldVal && list.includes(oldVal)) ? oldVal : list[0];
     sel.value = current;
-    
     const catData = store[current] || {};
     document.getElementById('courtSelect').innerHTML = [1,2,3].map(c => `<option value="${c}" ${catData.court==String(c)?'selected':''}>SÂN ${c}</option>`).join('');
-    renderGroups();
+    renderPlayerList(); renderGroups();
 }
 
 function getFullCategoryList(tab) {
     let list = [];
-    if(tab === 'Poomsae') {
-        DATA_TREE.Poomsae.mains.forEach(m => {
-            let ages = m.includes('Cá Nhân') ? DATA_TREE.Poomsae.ages_ind : DATA_TREE.Poomsae.ages_grp;
-            let belts = m.includes('Cá Nhân') ? DATA_TREE.Poomsae.belts_ind : DATA_TREE.Poomsae.belts_grp;
-            ages.forEach(a => belts.forEach(b => list.push(`${m} - ${a} - ${b}`)));
-        });
-    } else if(tab === 'Kyorugi') {
-        DATA_TREE.Kyorugi.mains.forEach(m => {
-            DATA_TREE.Kyorugi.ages.forEach(a => { DATA_TREE.Kyorugi.weights[a].forEach(w => list.push(`${m} - ${a} - ${w}`)); });
-        });
-    } else {
-        DATA_TREE.Speed.mains.forEach(m => DATA_TREE.Speed.ages.forEach(a => list.push(`${m} - ${a}`)));
-    }
+    if(tab === 'Poomsae') { DATA_TREE.Poomsae.mains.forEach(m => { let ages = m.includes('Cá Nhân') ? DATA_TREE.Poomsae.ages_ind : DATA_TREE.Poomsae.ages_grp; let belts = m.includes('Cá Nhân') ? DATA_TREE.Poomsae.belts_ind : DATA_TREE.Poomsae.belts_grp; ages.forEach(a => belts.forEach(b => list.push(`${m} - ${a} - ${b}`))); }); }
+    else if(tab === 'Kyorugi') { DATA_TREE.Kyorugi.mains.forEach(m => { DATA_TREE.Kyorugi.ages.forEach(a => { DATA_TREE.Kyorugi.weights[a].forEach(w => list.push(`${m} - ${a} - ${w}`)); }); }); }
+    else { DATA_TREE.Speed.mains.forEach(m => DATA_TREE.Speed.ages.forEach(a => list.push(`${m} - ${a}`))); }
     return list;
 }
 
@@ -331,14 +318,9 @@ function renderGroups() {
     const area = document.getElementById('displayArea'); area.innerHTML = '';
     const data = store[current];
     if(!data?.groups) return area.innerHTML = "<div class='p-20 text-center opacity-20 font-black text-2xl uppercase italic'>Chưa bốc thăm</div>";
-
     data.groups.forEach((g, gi) => {
         let div = document.createElement('div'); div.className = 'p-10 relative border-b border-slate-100 last:border-0';
-        div.innerHTML = `<div class="flex items-center gap-6 mb-10 pb-6 border-b-2 border-slate-50">
-            <span class="court-label">SÂN ${data.court || 1}</span>
-            <h3 class="font-[900] uppercase italic text-2xl text-slate-800 tracking-tight">${g.name} - ${current}</h3>
-        </div>`;
-        
+        div.innerHTML = `<div class="flex items-center gap-6 mb-10 pb-6 border-b-2 border-slate-50"><span class="court-label">SÂN ${data.court || 1}</span><h3 class="font-[900] uppercase italic text-2xl text-slate-800">${g.name} - ${current}</h3></div>`;
         if(g.type === 'speed') {
             let sorted = [...g.players].sort((a,b) => b.score - a.score);
             let playerRows = g.players.map((p,pi) => `<div class="flex items-center gap-8 border-b border-slate-50 py-5"><div class="flex-1"><div class="text-[16px] font-[900] uppercase text-slate-900">${p.name}</div><div class="text-[10px] font-bold text-blue-500 uppercase mt-1 italic">${p.club}</div></div><input type="number" class="w-24 border-2 border-slate-100 rounded-2xl text-center font-black p-3 bg-slate-50 text-blue-600" value="${p.score||0}" ${userData.role!=='admin'?'disabled':''} onchange="updateSpeed(${gi},${pi},this.value)"></div>`).join('');
@@ -347,36 +329,23 @@ function renderGroups() {
             let bWrap = document.createElement('div'); bWrap.className = 'bracket-scroll';
             g.rounds.forEach((round, ri) => {
                 let col = document.createElement('div'); col.className = 'round-column';
+                let rLabel = (ri === g.rounds.length - 1) ? 'Chung kết' : (ri === g.rounds.length - 2) ? 'Bán kết' : 'Vòng loại';
                 round.forEach((m, mi) => {
-                    col.innerHTML += `<div class="match-box">
-                        <div class="match-no-container">(${userData.role==='admin' ? `<input type="text" class="match-no-input" value="${m.matchNo||''}" onchange="updateMatchNo(${gi},${ri},${mi},this.value)">` : `<span>${m.matchNo||''}</span>`})</div>
-                        <div class="player-line blue-side ${m.winner?.name===m.p1.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},1)"><span class="text-[13px] font-[900] uppercase text-slate-800">${m.p1.name}</span><span class="text-[9px] font-bold text-slate-400 uppercase italic">${m.p1.club}</span></div>
-                        <div class="player-line red-side ${m.winner?.name===m.p2.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},2)"><span class="text-[13px] font-[900] uppercase text-slate-800">${m.p2.name}</span><span class="text-[9px] font-bold text-slate-400 uppercase italic">${m.p2.club}</span></div>
-                    </div>`;
+                    col.innerHTML += `<div class="match-box"><div class="match-no-container">(${userData.role==='admin' ? `<input type="text" class="match-no-input" value="${m.matchNo||''}" onchange="updateMatchNo(${gi},${ri},${mi},this.value)">` : `<span>${m.matchNo||''}</span>`})</div><div class="player-line blue-side ${m.winner?.name===m.p1.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},1)"><span class="text-[13px] font-[900] uppercase text-slate-800">${m.p1.name}</span><span class="text-[9px] font-bold text-slate-400 uppercase italic">${m.p1.club}</span></div><div class="player-line red-side ${m.winner?.name===m.p2.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},2)"><span class="text-[13px] font-[900] uppercase text-slate-800">${m.p2.name}</span><span class="text-[9px] font-bold text-slate-400 uppercase italic">${m.p2.club}</span></div></div>`;
                 });
                 bWrap.appendChild(col);
             });
             let last = g.rounds[g.rounds.length-1][0], gold = last.winner, silver = gold ? (gold.name===last.p1.name?last.p2:last.p1) : null;
             let semi = g.rounds.length>=2?g.rounds[g.rounds.length-2]:[], b1 = semi[0]?.winner ? (semi[0].winner.name===semi[0].p1.name?semi[0].p2:semi[0].p1):null, b2 = semi[1]?.winner ? (semi[1].winner.name===semi[1].p1.name?semi[1].p2:semi[1].p1):null;
-            bWrap.innerHTML += `<div class="min-w-[260px] ml-12 flex flex-col justify-center space-y-3"><h4 class="text-[11px] font-[900] text-blue-600 mb-2 uppercase tracking-widest text-center border-b pb-2">Huy chương</h4>${renderMedalCard('🥇 VÀNG', gold, 'gold')}${renderMedalCard('🥈 BẠC', (silver&&silver.name!=='?')?silver:null, 'silver')}${renderMedalCard('🥉 ĐỒNG', (b1&&b1.name!=='BYE')?b1:null, 'bronze')}${renderMedalCard('🥉 ĐỒNG', (b2&&b2.name!=='BYE')?b2:null, 'bronze')}</div>`;
+            bWrap.innerHTML += `<div class="min-w-[260px] ml-12 flex flex-col justify-center space-y-3"><h4 class="text-[11px] font-[900] text-blue-600 mb-2 uppercase tracking-widest text-center border-b pb-2">Huy chương</h4>${renderMedalCard('🥇 VÀNG', gold, 'gold')}${renderMedalCard('🥈 BẠC', (silver&&silver.name!=='?')?silver:null, 'silver')}${renderMedalCard('🥉 ĐỒNG', (b1&&b1.name!=='BYE'&&b1.name!=='?')?b1:null, 'bronze')}${renderMedalCard('🥉 ĐỒNG', (b2&&b2.name!=='BYE'&&b2.name!=='?')?b2:null, 'bronze')}</div>`;
             div.appendChild(bWrap);
         }
         area.appendChild(div);
     });
 }
 
-function renderMedalCard(rank, p, type) {
-    if(!p || p.name === '?' || p.name === 'BYE') return `<div class="medal-card opacity-10 border-slate-100 bg-white">---</div>`;
-    return `<div class="medal-card ${type==='gold'?'gold-card':type==='silver'?'silver-card':'bronze-card'}"><span>${rank.split(' ')[0]}</span><div><div class="text-[13px] font-[900] uppercase leading-tight">${p.name}</div><div class="text-[9px] font-bold opacity-70 mt-0.5">${p.club}</div></div></div>`;
-}
-
-// --- UTILS ---
-function switchTab(t) { 
-    currentTab = t; current = ""; 
-    document.getElementById('bracketView').classList.remove('hidden');
-    document.getElementById('coachListView').classList.add('hidden');
-    updateTabUI(); initData(); 
-}
+function renderMedalCard(rank, p, type) { if(!p || p.name === '?' || p.name === 'BYE') return `<div class="medal-card opacity-10 border-slate-100 bg-white">---</div>`; return `<div class="medal-card ${type==='gold'?'gold-card':type==='silver'?'silver-card':'bronze-card'}"><span>${rank.split(' ')[0]}</span><div><div class="text-[13px] font-[900] uppercase leading-tight">${p.name}</div><div class="text-[9px] font-bold opacity-70 mt-0.5">${p.club}</div></div></div>`; }
+function switchTab(t) { currentTab = t; current = ""; document.getElementById('bracketView').classList.remove('hidden'); document.getElementById('coachListView').classList.add('hidden'); updateTabUI(); initData(); }
 function switchCat() { current = document.getElementById('catSelect').value; initData(); }
 function updateTabUI() { document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id === 'tab'+currentTab)); }
 function updateGlobalCourt(val) { if(userData.role!=='admin') return; db.child(current).update({ court: val }); }
@@ -384,25 +353,7 @@ function setWin(gi, ri, mi, pNum) { if(userData.role!=='admin') return; let g = 
 function updateSpeed(gi, pi, val) { if(userData.role!=='admin') return; store[current].groups[gi].players[pi].score = parseInt(val)||0; db.child(current).update({ groups: store[current].groups }); }
 function updateMatchNo(gi, ri, mi, val) { if(userData.role!=='admin') return; store[current].groups[gi].rounds[ri][mi].matchNo = val; db.child(current).update({ groups: store[current].groups }); }
 function resetData() { if(userData.role!=='admin') return; if(confirm("Xóa?")) db.child(current).child('groups').remove(); }
-function generateGroups() {
-    if(userData.role !== 'admin') return;
-    let data = store[current]; if(!data?.players || data.players.length < 2) return alert("Cần 2 VĐV!");
-    let p = [...data.players].sort(() => Math.random() - 0.5);
-    let groups = []; let size = (currentTab === 'Kyorugi') ? p.length : 4;
-    for (let i = 0; i < p.length; i += size) {
-        let chunk = p.slice(i, i + size);
-        if (currentTab === 'Speed') groups.push({ name: `NHÓM ${groups.length+1}`, type: 'speed', players: chunk.map(pl => ({...pl, score: 0})) });
-        else {
-            let bSize = Math.pow(2, Math.ceil(Math.log2(chunk.length)));
-            let pArr = Array(bSize).fill(null).map(() => ({ name: 'BYE', club: '-' }));
-            chunk.forEach((pl, idx) => { let pos = 0, temp = idx; for(let j=0; j<Math.log2(bSize); j++) { pos = (pos << 1) | (temp & 1); temp >>= 1; } pArr[pos] = pl; });
-            let r1 = []; for(let j=0; j<pArr.length; j+=2) { let m = { p1: pArr[j], p2: pArr[j+1], winner: null, matchNo: '' }; if(m.p2.name==='BYE') m.winner=m.p1; else if(m.p1.name==='BYE') m.winner=m.p2; r1.push(m); }
-            let bracket = [r1]; while(bracket[bracket.length-1].length > 1) { let prev = bracket[bracket.length-1], next = []; for(let k=0; k<prev.length; k+=2) next.push({ p1: prev[k].winner||{name:'?'}, p2: prev[k+1].winner||{name:'?'}, winner: null, matchNo: '' }); bracket.push(next); }
-            groups.push({ name: currentTab==='Kyorugi' ? "SƠ ĐỒ ĐỐI KHÁNG" : `NHÓM ${groups.length+1}`, type: 'bracket', rounds: bracket });
-        }
-    }
-    db.child(current).update({ groups: groups });
-}
+function generateGroups() { if(userData.role !== 'admin') return; let data = store[current]; if(!data?.players || data.players.length < 2) return alert("Cần 2 VĐV!"); let p = [...data.players].sort(() => Math.random() - 0.5); let groups = []; let size = (currentTab === 'Kyorugi') ? p.length : 4; for (let i = 0; i < p.length; i += size) { let chunk = p.slice(i, i + size); if (currentTab === 'Speed') groups.push({ name: `NHÓM ${groups.length+1}`, type: 'speed', players: chunk.map(pl => ({...pl, score: 0})) }); else { let bSize = Math.pow(2, Math.ceil(Math.log2(chunk.length))); let pArr = Array(bSize).fill(null).map(() => ({ name: 'BYE', club: '-' })); chunk.forEach((pl, idx) => { let pos = 0, temp = idx; for(let j=0; j<Math.log2(bSize); j++) { pos = (pos << 1) | (temp & 1); temp >>= 1; } pArr[pos] = pl; }); let r1 = []; for(let j=0; j<pArr.length; j+=2) { let m = { p1: pArr[j], p2: pArr[j+1], winner: null, matchNo: '' }; if(m.p2.name==='BYE') m.winner=m.p1; else if(m.p1.name==='BYE') m.winner=m.p2; r1.push(m); } let bracket = [r1]; while(bracket[bracket.length-1].length > 1) { let prev = bracket[bracket.length-1], next = []; for(let k=0; k<prev.length; k+=2) next.push({ p1: prev[k].winner||{name:'?'}, p2: prev[k+1].winner||{name:'?'}, winner: null, matchNo: '' }); bracket.push(next); } groups.push({ name: currentTab==='Kyorugi' ? "SƠ ĐỒ ĐỐI KHÁNG" : `NHÓM ${groups.length+1}`, type: 'bracket', rounds: bracket }); } } db.child(current).update({ groups: groups }); }
 
 async function exportPNG() {
     const area = document.getElementById('captureArea'); const btn = document.getElementById('exportBtn');
@@ -411,7 +362,7 @@ async function exportPNG() {
     try {
         const canvas = await html2canvas(area, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
         const link = document.createElement('a'); link.download = `${current}.png`; link.href = canvas.toDataURL("image/png"); link.click();
-    } catch (e) { alert("Lỗi Export."); } finally { area.classList.remove('exporting'); btn.innerText = "Xuất ảnh PNG"; btn.disabled = false; }
+    } catch (e) { alert("Lỗi Export."); } finally { area.classList.remove('exporting'); btn.innerText = "Export PNG"; btn.disabled = false; }
 }
 </script>
 </body>
