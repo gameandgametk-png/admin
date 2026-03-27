@@ -17,15 +17,16 @@
         .tab-btn { font-weight: 700; color: #64748b; transition: all 0.3s; padding: 10px 20px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px; }
         .tab-btn.active { background: #2563eb; color: white; shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
 
-        /* BRACKET */
+        /* BRACKET SYSTEM */
         .bracket-scroll { display: flex; gap: 4rem; padding: 1rem 0; align-items: stretch; width: max-content; }
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 260px; }
         .match-box { position: relative; border-left: 4px solid #334155; padding-left: 14px; margin: 28px 0; min-height: 110px; display: flex; flex-direction: column; justify-content: center; }
         
-        .match-no-container { position: absolute; left: -52px; top: 50%; transform: translateY(-50%); font-weight: 800; color: #1e40af; font-size: 15px; }
-        .match-no-input { background: transparent !important; border: none !important; width: 32px !important; padding: 0 !important; text-align: center !important; color: #1e40af !important; font-weight: 900 !important; font-size: 15px !important; }
+        /* CỐ ĐỊNH DẤU NGOẶC DUY NHẤT */
+        .match-no-container { position: absolute; left: -55px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #1e40af; font-size: 16px; display: flex; align-items: center; justify-content: center; width: 50px; }
+        .match-no-input { background: transparent !important; border: none !important; width: 35px !important; padding: 0 !important; text-align: center !important; color: #1e40af !important; font-weight: 900 !important; font-size: 16px !important; }
 
-        .player-line { height: 50px; border-bottom: 2px solid #f1f5f9; display: flex; flex-direction: column; justify-content: center; padding: 0 12px; background: white; position: relative; cursor: pointer; }
+        .player-line { height: 50px; border-bottom: 2px solid #f1f5f9; display: flex; flex-direction: column; justify-content: center; padding: 0 12px; background: white; position: relative; cursor: pointer; transition: 0.2s; }
         .blue-side { border-bottom: 3px solid #3b82f6 !important; }
         .red-side { border-bottom: 3px solid #ef4444 !important; }
         .is-winner { background: #f0f7ff; }
@@ -33,18 +34,15 @@
         
         .round-name-tag { font-size: 9px; font-weight: 900; text-transform: uppercase; color: #94a3b8; margin-top: 6px; text-align: center; background: #f8fafc; border-radius: 4px; padding: 2px 0; letter-spacing: 0.5px; }
 
-        /* MEDALS */
         .medal-card { padding: 12px 16px; border-radius: 16px; font-weight: 700; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; margin-bottom: 8px; }
         .gold-card { background: #fffbeb; border-color: #fde68a; color: #92400e; }
         .silver-card { background: #f8fafc; border-color: #e2e8f0; color: #334155; }
         .bronze-card { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
         .court-label { background: #0f172a; color: white; padding: 4px 14px; border-radius: 10px; font-size: 12px; font-weight: 900; }
         
-        /* EXPORT SETTINGS */
-        .match-no-text { display: none; }
-        .exporting .match-no-input { display: none !important; }
-        .exporting .match-no-text { display: inline !important; }
+        /* CSS DÀNH RIÊNG CHO EXPORT */
         #captureArea { padding: 40px; background: white; width: fit-content; min-width: 100%; border-radius: 40px; }
+        .exporting .match-no-input { pointer-events: none; }
     </style>
 </head>
 <body id="mainBody">
@@ -76,14 +74,14 @@
                 <option value="1">SÂN 1</option><option value="2">SÂN 2</option><option value="3">SÂN 3</option>
             </select>
         </div>
-        <button id="exportBtn" onclick="exportPNG()" class="bg-blue-600 text-white px-10 py-4 rounded-2xl text-[12px] font-[900] uppercase shadow-xl">Xuất ảnh PNG</button>
+        <button id="exportBtn" onclick="exportPNG()" class="bg-blue-600 text-white px-10 py-4 rounded-2xl text-[12px] font-[900] uppercase shadow-xl hover:bg-blue-700">Xuất ảnh PNG</button>
     </div>
 
     <div class="grid lg:grid-cols-4 gap-8">
         <aside class="lg:col-span-1">
             <div class="glass-card p-8 sticky top-8">
-                <h3 class="text-[11px] font-[900] text-slate-900 uppercase mb-6 text-center tracking-[0.2em] border-b-2 border-slate-100 pb-4 italic">Danh sách</h3>
-                <textarea id="bulkInput" class="w-full h-[500px] text-[13px] bg-slate-50 border-none mb-6 font-bold focus:bg-white" placeholder="Họ tên - Đơn vị"></textarea>
+                <h3 class="text-[11px] font-[900] text-slate-900 uppercase mb-6 text-center tracking-[0.2em] border-b-2 border-slate-100 pb-4 italic">Danh sách VĐV</h3>
+                <textarea id="bulkInput" class="w-full h-[450px] text-[13px] bg-slate-50 border-none mb-6 font-bold focus:bg-white" placeholder="Họ tên - Đơn vị"></textarea>
                 <div class="space-y-3">
                     <button onclick="importPlayers()" class="bg-slate-800 text-white w-full py-4 rounded-2xl font-black text-[12px] uppercase">1. Lưu danh sách</button>
                     <button onclick="generateGroups()" class="bg-red-500 text-white w-full py-4 rounded-2xl font-black text-[12px] uppercase shadow-xl">2. Bốc thăm</button>
@@ -181,10 +179,10 @@ function updateTabUI() {
     });
 }
 
-function updateGlobalCourt(val) { if(!isAdmin) return alert("Vui lòng đăng nhập!"); db.child(current).update({ court: val }); }
+function updateGlobalCourt(val) { if(!isAdmin) return alert("Cần Login Admin!"); db.child(current).update({ court: val }); }
 
 function importPlayers() {
-    if(!isAdmin) return alert("Admin Login required!");
+    if(!isAdmin) return alert("Cần Login Admin!");
     const players = document.getElementById('bulkInput').value.split('\n').filter(l => l.trim()).map(l => {
         let p = l.split('-'); return { name: p[0]?.trim().toUpperCase(), club: p[1]?.trim().toUpperCase() || '...' };
     });
@@ -193,9 +191,9 @@ function importPlayers() {
 }
 
 function generateGroups() {
-    if(!isAdmin) return alert("Admin Login required!");
+    if(!isAdmin) return alert("Cần Login Admin!");
     let data = store[current];
-    if(!data?.players || data.players.length < 2) return alert("Cần tối thiểu 2 VĐV!");
+    if(!data?.players || data.players.length < 2) return alert("Nhập ít nhất 2 VĐV!");
     let p = [...data.players].sort(() => Math.random() - 0.5);
     let groups = [];
     let size = (currentTab === 'Kyorugi') ? p.length : 4;
@@ -271,10 +269,7 @@ function renderGroups() {
                 round.forEach((m, mi) => {
                     col.innerHTML += `<div class="match-box">
                         <div class="match-no-container">
-                            <span class="match-no-text">(${m.matchNo || ''})</span>
-                            <span class="match-no-input-wrap">
-                                (<input type="text" class="match-no-input" value="${m.matchNo||''}" ${!isAdmin?'disabled':''} onchange="updateMatchNo(${gi},${ri},${mi},this.value)">)
-                            </span>
+                            (${isAdmin ? `<input type="text" class="match-no-input" value="${m.matchNo||''}" onchange="updateMatchNo(${gi},${ri},${mi},this.value)">` : `<span>${m.matchNo||''}</span>`})
                         </div>
                         <div class="player-line blue-side ${m.winner?.name===m.p1.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},1)">
                             <span class="text-[13px] font-[900] uppercase text-slate-800">${m.p1.name}</span>
@@ -290,16 +285,13 @@ function renderGroups() {
                 bWrap.appendChild(col);
             });
             
-            // XÁC ĐỊNH HUY CHƯƠNG CHO SƠ ĐỒ
             let last = g.rounds[g.rounds.length-1][0], gold = last.winner;
             let silver = gold ? (gold.name === last.p1.name ? last.p2 : last.p1) : null;
             let semi = g.rounds.length >= 2 ? g.rounds[g.rounds.length-2] : [];
             let b1 = semi[0]?.winner ? (semi[0].winner.name === semi[0].p1.name ? semi[0].p2 : semi[0].p1) : null;
             let b2 = semi[1]?.winner ? (semi[1].winner.name === semi[1].p1.name ? semi[1].p2 : semi[1].p1) : null;
 
-            let medalPosClass = currentTab === 'Kyorugi' ? 'ml-20' : 'pl-12 border-l-2 border-slate-50';
-
-            bWrap.innerHTML += `<div class="min-w-[280px] ${medalPosClass} flex flex-col justify-center space-y-3">
+            bWrap.innerHTML += `<div class="min-w-[280px] ml-12 flex flex-col justify-center space-y-3">
                 <h4 class="text-[11px] font-[900] text-blue-600 mb-2 uppercase tracking-widest text-center border-b pb-2">Bảng Huy Chương</h4>
                 ${renderMedalCard('🥇 VÀNG', gold, 'gold')}
                 ${renderMedalCard('🥈 BẠC', (silver && silver.name !=='?')?silver:null, 'silver')}
@@ -324,20 +316,15 @@ function renderMedalCard(rank, p, type) {
     </div>`;
 }
 
-function updateGlobalCourt(val) { if(!isAdmin) return alert("Login Admin!"); db.child(current).update({ court: val }); }
-function setWin(gi, ri, mi, pNum) { if(!isAdmin) return alert("Login Admin!"); let g = store[current].groups[gi], m = g.rounds[ri][mi], win = pNum===1?m.p1:m.p2; if(win.name==='?'||win.name==='BYE') return; m.winner = (m.winner?.name === win.name) ? null : win; if(g.rounds[ri+1]) { let nMi = Math.floor(mi / 2); if(mi%2===0) g.rounds[ri+1][nMi].p1=m.winner||{name:'?'}; else g.rounds[ri+1][nMi].p2=m.winner||{name:'?'}; } db.child(current).update({ groups: store[current].groups }); }
-function updateSpeed(gi, pi, val) { if(!isAdmin) return alert("Login Admin!"); store[current].groups[gi].players[pi].score = parseInt(val)||0; db.child(current).update({ groups: store[current].groups }); }
-function updateMatchNo(gi, ri, mi, val) { if(!isAdmin) return alert("Login Admin!"); store[current].groups[gi].rounds[ri][mi].matchNo = val; db.child(current).update({ groups: store[current].groups }); }
-function resetData() { if(!isAdmin) return alert("Login Admin!"); if(confirm("Xóa bốc thăm?")) db.child(current).child('groups').remove(); }
+function setWin(gi, ri, mi, pNum) { if(!isAdmin) return; let g = store[current].groups[gi], m = g.rounds[ri][mi], win = pNum===1?m.p1:m.p2; if(win.name==='?'||win.name==='BYE') return; m.winner = (m.winner?.name === win.name) ? null : win; if(g.rounds[ri+1]) { let nMi = Math.floor(mi / 2); if(mi%2===0) g.rounds[ri+1][nMi].p1=m.winner||{name:'?'}; else g.rounds[ri+1][nMi].p2=m.winner||{name:'?'}; } db.child(current).update({ groups: store[current].groups }); }
+function updateSpeed(gi, pi, val) { if(!isAdmin) return; store[current].groups[gi].players[pi].score = parseInt(val)||0; db.child(current).update({ groups: store[current].groups }); }
+function updateMatchNo(gi, ri, mi, val) { if(!isAdmin) return; store[current].groups[gi].rounds[ri][mi].matchNo = val; db.child(current).update({ groups: store[current].groups }); }
+function resetData() { if(!isAdmin) return; if(confirm("Xóa bốc thăm?")) db.child(current).child('groups').remove(); }
 function toggleLogin() { let p = prompt("Password:"); if(p === '123') { isAdmin = true; document.getElementById('mainBody').classList.add('admin-mode'); document.getElementById('adminStatus').innerText = "Admin mode Active"; document.getElementById('loginBtn').innerText = "LOGOUT"; } else { isAdmin = false; document.getElementById('mainBody').classList.remove('admin-mode'); document.getElementById('adminStatus').innerText = "Chế độ xem"; document.getElementById('loginBtn').innerText = "Admin Login"; } initData(); }
 
 async function exportPNG() {
     const area = document.getElementById('captureArea'); const btn = document.getElementById('exportBtn');
     btn.innerText = "Dựng ảnh..."; btn.disabled = true;
-    document.querySelectorAll('.match-no-input').forEach(input => {
-        const textSpan = input.closest('.match-no-container').querySelector('.match-no-text');
-        textSpan.innerText = input.value ? `(${input.value})` : "()";
-    });
     area.classList.add('exporting');
     try {
         const canvas = await html2canvas(area, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
