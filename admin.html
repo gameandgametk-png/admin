@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI LIVE - TOURNAMENT 2026</title>
+    <title>SEUNG RI LIVE - PROFESSIONAL EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -21,14 +21,13 @@
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 250px; }
         .match-box { position: relative; border-left: 3px solid #cbd5e1; padding-left: 14px; margin: 28px 0; min-height: 110px; display: flex; flex-direction: column; justify-content: center; }
         .match-no-container { position: absolute; left: -52px; top: 50%; transform: translateY(-50%); font-weight: 800; color: #1e40af; font-size: 15px; }
-        .match-no-input { background: transparent !important; border: none !important; width: 35px !important; padding: 0 !important; text-align: center !important; color: #1e40af !important; font-weight: 900 !important; }
+        .match-no-input { background: transparent !important; border: none !important; width: 30px !important; padding: 0 !important; text-align: center !important; color: #1e40af !important; font-weight: 900 !important; }
         .player-line { height: 46px; border-bottom: 2px solid #f1f5f9; display: flex; flex-direction: column; justify-content: center; padding: 0 12px; background: white; position: relative; cursor: pointer; }
         .blue-side { border-bottom: 3px solid #3b82f6 !important; }
         .red-side { border-bottom: 3px solid #ef4444 !important; }
         .is-winner { background: #f0f7ff; }
         .is-winner::after { content: "★ WIN"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #3b82f6; font-size: 10px; font-weight: 900; }
-        .player-name { font-size: 13px; font-weight: 900; text-transform: uppercase; color: #1e293b; }
-        .player-club { font-size: 10px; font-weight: 500; color: #94a3b8; text-transform: uppercase; }
+        .player-name-full { font-size: 13px; font-weight: 900; text-transform: uppercase; color: #1e293b; }
         .medal-card { padding: 10px 16px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; margin-bottom: 8px; }
         .gold-card { background: #fffbeb; border-color: #fde68a; color: #92400e; }
         .silver-card { background: #f8fafc; border-color: #e2e8f0; color: #334155; }
@@ -52,18 +51,18 @@
             </nav>
         </div>
         <div class="flex items-center gap-3">
-            <span id="adminStatus" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Chế độ xem</span>
-            <button onclick="toggleLogin()" id="loginBtn" class="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase shadow-lg transition hover:scale-105 active:scale-95">Admin Login</button>
+            <span id="adminStatus" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Hệ thống đồng bộ trực tuyến</span>
+            <button onclick="toggleLogin()" id="loginBtn" class="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase shadow-lg">Admin Login</button>
         </div>
     </header>
 
     <div class="bg-white p-5 rounded-[1.5rem] shadow-sm mb-10 flex flex-wrap items-center gap-6 border-l-[6px] border-blue-600">
         <div class="flex-1 min-w-[300px]">
-            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Hạng cân / Nội dung thi đấu</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Hạng cân / Nội dung</span>
             <select id="catSelect" onchange="switchCat()"></select>
         </div>
         <div class="w-40">
-            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Cố định sân</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Sân cố định</span>
             <select id="courtSelect" onchange="updateGlobalCourt(this.value)">
                 <option value="1">SÂN 1</option><option value="2">SÂN 2</option><option value="3">SÂN 3</option>
             </select>
@@ -74,12 +73,12 @@
     <div class="grid lg:grid-cols-4 gap-10">
         <aside class="lg:col-span-1 space-y-6">
             <div class="glass-card p-6">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 text-center tracking-widest italic border-b pb-2">Danh sách vận động viên</h3>
-                <textarea id="bulkInput" class="w-full h-80 text-[13px] bg-slate-50 border-none mb-4 font-bold" placeholder="Tên VĐV - Đơn vị (Mỗi người 1 dòng)"></textarea>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 text-center tracking-widest italic border-b pb-2">Dán danh sách VĐV</h3>
+                <textarea id="bulkInput" class="w-full h-80 text-[13px] bg-slate-50 border-none mb-4 font-bold" placeholder="Tên VĐV - Đơn vị"></textarea>
                 <div class="space-y-2">
                     <button onclick="importPlayers()" class="bg-blue-600 text-white w-full py-3 rounded-xl font-bold text-[11px] uppercase">1. Lưu danh sách</button>
                     <button onclick="generateGroups()" class="bg-red-500 text-white w-full py-4 rounded-xl font-black text-[11px] uppercase shadow-lg italic">2. Bốc thăm / Chia nhóm</button>
-                    <button onclick="resetData()" class="text-red-400 w-full py-2 text-[10px] font-bold uppercase hover:underline">Xóa dữ liệu bốc thăm</button>
+                    <button onclick="resetData()" class="text-red-400 w-full py-2 text-[10px] font-bold uppercase hover:underline">Xóa kết quả</button>
                 </div>
             </div>
             <div class="glass-card p-6 bg-slate-50/30">
@@ -97,7 +96,6 @@
 </div>
 
 <script>
-// --- CONFIG CƠ CẤU NỘI DUNG ---
 const DATA_TREE = {
     Poomsae: {
         mains: ["Quyền Cá Nhân Nam", "Quyền Cá Nhân Nữ", "Quyền Đôi Nam Nữ", "Quyền Đồng Đội Nam", "Quyền Đồng Đội Nữ"],
@@ -180,16 +178,16 @@ function updateTabUI() {
 function updateGlobalCourt(val) { if(!isAdmin) return alert("Vui lòng Login Admin!"); db.child(current).update({ court: val }); }
 
 function importPlayers() {
-    if(!isAdmin) return alert("Vui lòng Login Admin!");
+    if(!isAdmin) return alert("Bạn cần đăng nhập Admin để sửa danh sách!");
     const players = document.getElementById('bulkInput').value.split('\n').filter(l => l.trim()).map(l => {
         let p = l.split('-'); return { name: p[0]?.trim().toUpperCase(), club: p[1]?.trim().toUpperCase() || '...' };
     });
     db.child(current).update({ players: players });
-    alert("Đã lưu danh sách!");
+    alert("Đã lưu!");
 }
 
 function generateGroups() {
-    if(!isAdmin) return alert("Vui lòng Login Admin!");
+    if(!isAdmin) return alert("Bạn cần đăng nhập Admin để bốc thăm!");
     let data = store[current];
     if(!data?.players || data.players.length < 2) return alert("Nhập ít nhất 2 VĐV!");
     let p = [...data.players].sort(() => Math.random() - 0.5);
@@ -243,7 +241,7 @@ function renderGroups() {
             let sorted = [...g.players].sort((a,b) => b.score - a.score);
             let playerRows = g.players.map((p,pi) => `
                 <div class="flex items-center gap-6 border-b border-slate-50 py-4">
-                    <div class="flex-1"><div class="text-sm font-black uppercase">${p.name}</div><div class="text-[10px] font-bold opacity-50 uppercase">${p.club}</div></div>
+                    <div class="flex-1"><div class="text-sm font-[900] uppercase text-slate-800">${p.name} - ${p.club}</div></div>
                     <input type="number" class="w-24 border-2 border-blue-100 rounded-xl text-center font-black p-2 bg-slate-50" 
                     value="${p.score||0}" ${!isAdmin?'disabled':''} onchange="updateSpeed(${gi},${pi},this.value)">
                 </div>`).join('');
@@ -251,10 +249,11 @@ function renderGroups() {
             div.innerHTML += `<div class="flex flex-col md:flex-row gap-12">
                 <div class="flex-1">${playerRows}</div>
                 <div class="w-72 bg-slate-50/50 p-6 rounded-3xl space-y-3">
-                    <h4 class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-widest text-center">Bảng Huy Chương</h4>
+                    <h4 class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-widest text-center">Bảng Huy Chương Nhóm</h4>
                     ${renderMedalCard('🥇 VÀNG', sorted[0]?.score>0?sorted[0]:null, 'gold')}
                     ${renderMedalCard('🥈 BẠC', sorted[1]?.score>0?sorted[1]:null, 'silver')}
                     ${renderMedalCard('🥉 ĐỒNG', sorted[2]?.score>0?sorted[2]:null, 'bronze')}
+                    ${renderMedalCard('🥉 ĐỒNG', sorted[3]?.score>0?sorted[3]:null, 'bronze')}
                 </div>
             </div>`;
             if(sorted[0]?.score > 0) sideMedalArea.innerHTML += renderMedalCard('🥇', sorted[0], 'gold');
@@ -270,8 +269,12 @@ function renderGroups() {
                                 (<input type="text" class="match-no-input" value="${m.matchNo||''}" ${!isAdmin?'disabled':''} onchange="updateMatchNo(${gi},${ri},${mi},this.value)">)
                             </span>
                         </div>
-                        <div class="player-line blue-side ${m.winner?.name===m.p1.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},1)"><span class="text-[13px] font-[900] uppercase">${m.p1.name}</span><span class="text-[10px] font-bold opacity-50 uppercase">${m.p1.club}</span></div>
-                        <div class="player-line red-side ${m.winner?.name===m.p2.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},2)"><span class="text-[13px] font-[900] uppercase">${m.p2.name}</span><span class="text-[10px] font-bold opacity-50 uppercase">${m.p2.club}</span></div>
+                        <div class="player-line blue-side ${m.winner?.name===m.p1.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},1)">
+                            <span class="player-name-full">${m.p1.name} - ${m.p1.club}</span>
+                        </div>
+                        <div class="player-line red-side ${m.winner?.name===m.p2.name?'is-winner':''}" onclick="setWin(${gi},${ri},${mi},2)">
+                            <span class="player-name-full">${m.p2.name} - ${m.p2.club}</span>
+                        </div>
                     </div>`;
                 });
                 bWrap.appendChild(col);
@@ -294,32 +297,33 @@ function renderGroups() {
 }
 
 function renderMedalCard(rank, p, type) {
-    if(!p || p.name === '?' || p.name === 'BYE') return `<div class="medal-card opacity-10">---</div>`;
+    if(!p || p.name === '?' || p.name === 'BYE') return `<div class="medal-card opacity-10 border-slate-100 bg-white">---</div>`;
     const style = type === 'gold' ? 'gold-card' : (type === 'silver' ? 'silver-card' : 'bronze-card');
     return `<div class="medal-card ${style}"><span>${rank.split(' ')[0]}</span><div><div class="text-[12px] font-[900] uppercase">${p.name}</div><div class="text-[9px] font-bold opacity-70">${p.club}</div></div></div>`;
 }
 
+function updateGlobalCourt(val) { if(!isAdmin) return alert("Vui lòng Login Admin!"); db.child(current).update({ court: val }); }
 function setWin(gi, ri, mi, pNum) { if(!isAdmin) return alert("Login Admin!"); let g = store[current].groups[gi], m = g.rounds[ri][mi], win = pNum===1?m.p1:m.p2; if(win.name==='?'||win.name==='BYE') return; m.winner = (m.winner?.name === win.name) ? null : win; if(g.rounds[ri+1]) { let nMi = Math.floor(mi / 2); if(mi%2===0) g.rounds[ri+1][nMi].p1=m.winner||{name:'?'}; else g.rounds[ri+1][nMi].p2=m.winner||{name:'?'}; } db.child(current).update({ groups: store[current].groups }); }
 function updateSpeed(gi, pi, val) { if(!isAdmin) return alert("Login Admin!"); store[current].groups[gi].players[pi].score = parseInt(val)||0; db.child(current).update({ groups: store[current].groups }); }
 function updateMatchNo(gi, ri, mi, val) { if(!isAdmin) return alert("Login Admin!"); store[current].groups[gi].rounds[ri][mi].matchNo = val; db.child(current).update({ groups: store[current].groups }); }
-function resetData() { if(!isAdmin) return alert("Login Admin!"); if(confirm("Xóa kết quả?")) db.child(current).child('groups').remove(); }
-function toggleLogin() { let p = prompt("Password:"); if(p === '123') { isAdmin = true; document.getElementById('mainBody').classList.add('admin-mode'); document.getElementById('adminStatus').innerText = "Đã đăng nhập Admin"; document.getElementById('loginBtn').innerText = "LOGOUT"; } else { isAdmin = false; document.getElementById('mainBody').classList.remove('admin-mode'); document.getElementById('adminStatus').innerText = "Chế độ xem"; document.getElementById('loginBtn').innerText = "Admin Login"; } initData(); }
+function resetData() { if(!isAdmin) return alert("Login Admin!"); if(confirm("Xóa bốc thăm?")) db.child(current).child('groups').remove(); }
+function toggleLogin() { let p = prompt("Password:"); if(p === '123') { isAdmin = true; document.getElementById('mainBody').classList.add('admin-mode'); document.getElementById('adminStatus').innerText = "Admin đã đăng nhập"; document.getElementById('loginBtn').innerText = "LOGOUT"; } else { isAdmin = false; document.getElementById('mainBody').classList.remove('admin-mode'); document.getElementById('adminStatus').innerText = "Chế độ xem"; document.getElementById('loginBtn').innerText = "Admin Login"; } initData(); }
 
 async function exportPNG() {
     const area = document.getElementById('captureArea'); const btn = document.getElementById('exportBtn');
-    btn.innerText = "Đang xử lý..."; btn.disabled = true;
-    
-    // Đồng bộ số trận vào span text để html2canvas đọc được
+    btn.innerText = "Dựng ảnh..."; btn.disabled = true;
     document.querySelectorAll('.match-no-input').forEach(input => {
         const textSpan = input.closest('.match-no-container').querySelector('.match-no-text');
         textSpan.innerText = input.value ? `(${input.value})` : "()";
     });
-
     area.classList.add('exporting');
     try {
         const canvas = await html2canvas(area, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
-        const link = document.createElement('a'); link.download = `${current}.png`; link.href = canvas.toDataURL("image/png"); link.click();
-    } catch (e) { alert("Lỗi Xuất ảnh."); } 
+        const link = document.createElement('a'); 
+        link.download = `RESULT_${current}.png`; 
+        link.href = canvas.toDataURL("image/png"); 
+        link.click();
+    } catch (e) { alert("Lỗi Export."); } 
     finally { area.classList.remove('exporting'); btn.innerText = "Xuất ảnh PNG"; btn.disabled = false; }
 }
 </script>
