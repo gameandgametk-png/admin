@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEUNG RI LIVE - PROFESSIONAL EDITION</title>
+    <title>SEUNG RI LIVE - TOURNAMENT 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -17,27 +17,23 @@
         .tab-btn { position: relative; font-weight: 700; color: #64748b; transition: all 0.3s; padding: 8px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
         .tab-btn.active { color: #2563eb; }
         .tab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 20%; right: 20%; height: 3px; background: #2563eb; border-radius: 99px; }
-        
-        /* BRACKET */
         .bracket-scroll { display: flex; gap: 3.5rem; padding: 1rem 0; align-items: stretch; width: max-content; }
         .round-column { display: flex; flex-direction: column; justify-content: space-around; min-width: 250px; }
         .match-box { position: relative; border-left: 3px solid #cbd5e1; padding-left: 14px; margin: 28px 0; min-height: 110px; display: flex; flex-direction: column; justify-content: center; }
         .match-no-container { position: absolute; left: -52px; top: 50%; transform: translateY(-50%); font-weight: 800; color: #1e40af; font-size: 15px; }
         .match-no-input { background: transparent !important; border: none !important; width: 35px !important; padding: 0 !important; text-align: center !important; color: #1e40af !important; font-weight: 900 !important; }
-
         .player-line { height: 46px; border-bottom: 2px solid #f1f5f9; display: flex; flex-direction: column; justify-content: center; padding: 0 12px; background: white; position: relative; cursor: pointer; }
         .blue-side { border-bottom: 3px solid #3b82f6 !important; }
         .red-side { border-bottom: 3px solid #ef4444 !important; }
         .is-winner { background: #f0f7ff; }
         .is-winner::after { content: "★ WIN"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #3b82f6; font-size: 10px; font-weight: 900; }
-        
+        .player-name { font-size: 13px; font-weight: 900; text-transform: uppercase; color: #1e293b; }
+        .player-club { font-size: 10px; font-weight: 500; color: #94a3b8; text-transform: uppercase; }
         .medal-card { padding: 10px 16px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; margin-bottom: 8px; }
         .gold-card { background: #fffbeb; border-color: #fde68a; color: #92400e; }
         .silver-card { background: #f8fafc; border-color: #e2e8f0; color: #334155; }
         .bronze-card { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
         .court-label { background: #0f172a; color: white; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; }
-        
-        /* HIỂN THỊ SỐ TRẬN KHI XUẤT ẢNH */
         .match-no-text { display: none; font-weight: 900; color: #1e40af; font-size: 15px; }
         .exporting .match-no-input { display: none !important; }
         .exporting .match-no-text { display: inline !important; }
@@ -56,34 +52,34 @@
             </nav>
         </div>
         <div class="flex items-center gap-3">
-            <span id="adminStatus" class="text-[9px] font-bold text-slate-400 uppercase">View Only Mode</span>
-            <button onclick="toggleLogin()" id="loginBtn" class="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase shadow-lg">Admin Login</button>
+            <span id="adminStatus" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Chế độ xem</span>
+            <button onclick="toggleLogin()" id="loginBtn" class="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase shadow-lg transition hover:scale-105 active:scale-95">Admin Login</button>
         </div>
     </header>
 
     <div class="bg-white p-5 rounded-[1.5rem] shadow-sm mb-10 flex flex-wrap items-center gap-6 border-l-[6px] border-blue-600">
         <div class="flex-1 min-w-[300px]">
-            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Hạng cân / Nội dung</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Hạng cân / Nội dung thi đấu</span>
             <select id="catSelect" onchange="switchCat()"></select>
         </div>
         <div class="w-40">
-            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Sân</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Cố định sân</span>
             <select id="courtSelect" onchange="updateGlobalCourt(this.value)">
                 <option value="1">SÂN 1</option><option value="2">SÂN 2</option><option value="3">SÂN 3</option>
             </select>
         </div>
-        <button onclick="exportPNG()" class="bg-slate-100 text-slate-900 px-8 py-3 rounded-xl text-[11px] font-black uppercase hover:bg-slate-200">Export PNG</button>
+        <button onclick="exportPNG()" class="bg-slate-100 text-slate-900 px-8 py-3 rounded-xl text-[11px] font-black uppercase hover:bg-slate-200">Xuất ảnh PNG</button>
     </div>
 
     <div class="grid lg:grid-cols-4 gap-10">
         <aside class="lg:col-span-1 space-y-6">
             <div class="glass-card p-6">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 text-center tracking-widest italic border-b pb-2">Danh sách VĐV</h3>
-                <textarea id="bulkInput" class="w-full h-80 text-[13px] bg-slate-50 border-none mb-4 font-bold" placeholder="Tên VĐV - Đơn vị"></textarea>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 text-center tracking-widest italic border-b pb-2">Danh sách vận động viên</h3>
+                <textarea id="bulkInput" class="w-full h-80 text-[13px] bg-slate-50 border-none mb-4 font-bold" placeholder="Tên VĐV - Đơn vị (Mỗi người 1 dòng)"></textarea>
                 <div class="space-y-2">
                     <button onclick="importPlayers()" class="bg-blue-600 text-white w-full py-3 rounded-xl font-bold text-[11px] uppercase">1. Lưu danh sách</button>
-                    <button onclick="generateGroups()" class="bg-red-500 text-white w-full py-4 rounded-xl font-black text-[11px] uppercase shadow-lg italic">2. Bốc thăm (Draw)</button>
-                    <button onclick="resetData()" class="text-red-400 w-full py-2 text-[10px] font-bold uppercase hover:underline">Xóa kết quả</button>
+                    <button onclick="generateGroups()" class="bg-red-500 text-white w-full py-4 rounded-xl font-black text-[11px] uppercase shadow-lg italic">2. Bốc thăm / Chia nhóm</button>
+                    <button onclick="resetData()" class="text-red-400 w-full py-2 text-[10px] font-bold uppercase hover:underline">Xóa dữ liệu bốc thăm</button>
                 </div>
             </div>
             <div class="glass-card p-6 bg-slate-50/30">
@@ -101,7 +97,7 @@
 </div>
 
 <script>
-// --- CONFIG DATA ---
+// --- CONFIG CƠ CẤU NỘI DUNG ---
 const DATA_TREE = {
     Poomsae: {
         mains: ["Quyền Cá Nhân Nam", "Quyền Cá Nhân Nữ", "Quyền Đôi Nam Nữ", "Quyền Đồng Đội Nam", "Quyền Đồng Đội Nữ"],
@@ -118,7 +114,10 @@ const DATA_TREE = {
             "15-17 tuổi": ["42kg", "44kg", "46kg", "49kg", "52kg", "55kg", "59kg", "63kg", "68kg", "Trên 68kg"]
         }
     },
-    Speed: { mains: ["Speed Kick Nam", "Speed Kick Nữ"], ages: ["Dưới 11 tuổi", "12-14 tuổi", "15-17 tuổi"] }
+    Speed: { 
+        mains: ["Đá tống trước Nam", "Đá tống trước Nữ", "Đá Vòng Cầu Nam", "Đá Vòng Cầu Nữ", "Đấm Nam", "Đấm Nữ"], 
+        ages: ["Dưới 4 tuổi", "5 - 6 tuổi", "7 - 8 tuổi", "9 - 10 tuổi", "11 - 12 tuổi", "13 - 14 tuổi", "15 - 17 tuổi", "Trên 18 tuổi"] 
+    }
 };
 
 const firebaseConfig = {
@@ -178,18 +177,19 @@ function updateTabUI() {
     });
 }
 
-// --- LOGIC ĐIỀU HÀNH ---
+function updateGlobalCourt(val) { if(!isAdmin) return alert("Vui lòng Login Admin!"); db.child(current).update({ court: val }); }
+
 function importPlayers() {
-    if(!isAdmin) return alert("Bạn cần đăng nhập Admin để sửa danh sách!");
+    if(!isAdmin) return alert("Vui lòng Login Admin!");
     const players = document.getElementById('bulkInput').value.split('\n').filter(l => l.trim()).map(l => {
         let p = l.split('-'); return { name: p[0]?.trim().toUpperCase(), club: p[1]?.trim().toUpperCase() || '...' };
     });
     db.child(current).update({ players: players });
-    alert("Đã lưu!");
+    alert("Đã lưu danh sách!");
 }
 
 function generateGroups() {
-    if(!isAdmin) return alert("Bạn cần đăng nhập Admin để bốc thăm!");
+    if(!isAdmin) return alert("Vui lòng Login Admin!");
     let data = store[current];
     if(!data?.players || data.players.length < 2) return alert("Nhập ít nhất 2 VĐV!");
     let p = [...data.players].sort(() => Math.random() - 0.5);
@@ -240,7 +240,6 @@ function renderGroups() {
         </div>`;
         
         if(g.type === 'speed') {
-            // SPEED: DANH SÁCH DỌC - HUY CHƯƠNG BÊN CẠNH
             let sorted = [...g.players].sort((a,b) => b.score - a.score);
             let playerRows = g.players.map((p,pi) => `
                 <div class="flex items-center gap-6 border-b border-slate-50 py-4">
@@ -258,6 +257,7 @@ function renderGroups() {
                     ${renderMedalCard('🥉 ĐỒNG', sorted[2]?.score>0?sorted[2]:null, 'bronze')}
                 </div>
             </div>`;
+            if(sorted[0]?.score > 0) sideMedalArea.innerHTML += renderMedalCard('🥇', sorted[0], 'gold');
         } else {
             let bWrap = document.createElement('div'); bWrap.className = 'bracket-scroll';
             g.rounds.forEach((round, ri) => {
@@ -284,7 +284,7 @@ function renderGroups() {
 
             bWrap.innerHTML += `<div class="min-w-[240px] border-l-2 border-slate-50 pl-10 flex flex-col justify-center space-y-2">
                 <h4 class="text-[10px] font-black text-slate-300 mb-2 uppercase">Kết quả nhóm</h4>
-                ${renderMedalCard('🥇 VÀNG', gold, 'gold')}${renderMedalCard('🥈 BẠC', silver?.name!=='?'?silver:null, 'silver')}${renderMedalCard('🥉 ĐỒNG', b1?.name!=='BYE'?b1:null, 'bronze')}${renderMedalCard('🥉 ĐỒNG', b2?.name!=='BYE'?b2:null, 'bronze')}
+                ${renderMedalCard('🥇 VÀNG', gold, 'gold')}${renderMedalCard('🥈 BẠC', silver?.name!=='?'?silver:null, 'silver')}${renderMedalCard('🥉 ĐỒNG', b1?.name!=='BYE'&&b1?.name!=='?'?b1:null, 'bronze')}${renderMedalCard('🥉 ĐỒNG', b2?.name!=='BYE'&&b2?.name!=='?'?b2:null, 'bronze')}
             </div>`;
             div.appendChild(bWrap);
             if(gold) sideMedalArea.innerHTML += renderMedalCard('🥇', gold, 'gold');
@@ -294,36 +294,33 @@ function renderGroups() {
 }
 
 function renderMedalCard(rank, p, type) {
-    if(!p || p.name === '?' || p.name === 'BYE') return `<div class="medal-card opacity-10 border-slate-100 bg-white">---</div>`;
+    if(!p || p.name === '?' || p.name === 'BYE') return `<div class="medal-card opacity-10">---</div>`;
     const style = type === 'gold' ? 'gold-card' : (type === 'silver' ? 'silver-card' : 'bronze-card');
     return `<div class="medal-card ${style}"><span>${rank.split(' ')[0]}</span><div><div class="text-[12px] font-[900] uppercase">${p.name}</div><div class="text-[9px] font-bold opacity-70">${p.club}</div></div></div>`;
 }
 
-function updateGlobalCourt(val) { if(!isAdmin) return alert("Vui lòng Login Admin!"); db.child(current).update({ court: val }); }
 function setWin(gi, ri, mi, pNum) { if(!isAdmin) return alert("Login Admin!"); let g = store[current].groups[gi], m = g.rounds[ri][mi], win = pNum===1?m.p1:m.p2; if(win.name==='?'||win.name==='BYE') return; m.winner = (m.winner?.name === win.name) ? null : win; if(g.rounds[ri+1]) { let nMi = Math.floor(mi / 2); if(mi%2===0) g.rounds[ri+1][nMi].p1=m.winner||{name:'?'}; else g.rounds[ri+1][nMi].p2=m.winner||{name:'?'}; } db.child(current).update({ groups: store[current].groups }); }
 function updateSpeed(gi, pi, val) { if(!isAdmin) return alert("Login Admin!"); store[current].groups[gi].players[pi].score = parseInt(val)||0; db.child(current).update({ groups: store[current].groups }); }
 function updateMatchNo(gi, ri, mi, val) { if(!isAdmin) return alert("Login Admin!"); store[current].groups[gi].rounds[ri][mi].matchNo = val; db.child(current).update({ groups: store[current].groups }); }
-function resetData() { if(!isAdmin) return alert("Login Admin!"); if(confirm("Xóa bốc thăm?")) db.child(current).child('groups').remove(); }
-function toggleLogin() { let p = prompt("Password:"); if(p === '123') { isAdmin = true; document.getElementById('mainBody').classList.add('admin-mode'); document.getElementById('adminStatus').innerText = "ADMIN MODE ACTIVE"; document.getElementById('loginBtn').innerText = "LOGOUT"; } else { isAdmin = false; document.getElementById('mainBody').classList.remove('admin-mode'); document.getElementById('adminStatus').innerText = "View Only Mode"; document.getElementById('loginBtn').innerText = "Admin Login"; } initData(); }
+function resetData() { if(!isAdmin) return alert("Login Admin!"); if(confirm("Xóa kết quả?")) db.child(current).child('groups').remove(); }
+function toggleLogin() { let p = prompt("Password:"); if(p === '123') { isAdmin = true; document.getElementById('mainBody').classList.add('admin-mode'); document.getElementById('adminStatus').innerText = "Đã đăng nhập Admin"; document.getElementById('loginBtn').innerText = "LOGOUT"; } else { isAdmin = false; document.getElementById('mainBody').classList.remove('admin-mode'); document.getElementById('adminStatus').innerText = "Chế độ xem"; document.getElementById('loginBtn').innerText = "Admin Login"; } initData(); }
 
 async function exportPNG() {
     const area = document.getElementById('captureArea'); const btn = document.getElementById('exportBtn');
-    btn.innerText = "Processing..."; btn.disabled = true;
+    btn.innerText = "Đang xử lý..."; btn.disabled = true;
     
-    // Gắn class exporting để chuyển đổi input -> text
+    // Đồng bộ số trận vào span text để html2canvas đọc được
+    document.querySelectorAll('.match-no-input').forEach(input => {
+        const textSpan = input.closest('.match-no-container').querySelector('.match-no-text');
+        textSpan.innerText = input.value ? `(${input.value})` : "()";
+    });
+
     area.classList.add('exporting');
-    
     try {
         const canvas = await html2canvas(area, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
-        const link = document.createElement('a'); 
-        link.download = `RESULT_${current}.png`; 
-        link.href = canvas.toDataURL("image/png"); 
-        link.click();
-    } catch (e) { alert("Lỗi Export."); } 
-    finally { 
-        area.classList.remove('exporting');
-        btn.innerText = "EXPORT PNG"; btn.disabled = false; 
-    }
+        const link = document.createElement('a'); link.download = `${current}.png`; link.href = canvas.toDataURL("image/png"); link.click();
+    } catch (e) { alert("Lỗi Xuất ảnh."); } 
+    finally { area.classList.remove('exporting'); btn.innerText = "Xuất ảnh PNG"; btn.disabled = false; }
 }
 </script>
 </body>
